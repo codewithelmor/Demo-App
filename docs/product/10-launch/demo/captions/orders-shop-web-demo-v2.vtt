@@ -1,0 +1,326 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:05.510
+Welcome to the updated Orders Shop, the web
+front end for the Orders API.
+
+00:00:05.510 --> 00:00:10.130
+It now has a fresh look, built with
+Bootstrap and the Lumen theme,
+
+00:00:10.130 --> 00:00:13.770
+and it asks you to confirm before
+it saves anything.
+
+00:00:13.770 --> 00:00:17.970
+This tour uses the real app, running
+locally with demo data.
+
+00:00:17.970 --> 00:00:22.240
+We start as a customer, and then
+switch to the administrator.
+
+00:00:24.006 --> 00:00:25.806
+This is the sign-in page.
+
+00:00:25.806 --> 00:00:28.830
+A new customer starts with Create account.
+
+00:00:29.542 --> 00:00:35.249
+Registration asks for a name, an email, and
+a password, in floating labels.
+
+00:00:35.249 --> 00:00:41.564
+The form checks as you type, so a password that
+is too short is flagged right away,
+
+00:00:41.564 --> 00:00:43.390
+before anything is sent.
+
+00:00:44.097 --> 00:00:49.308
+The password needs at least fifteen
+characters, with no composition rules,
+
+00:00:49.308 --> 00:00:50.927
+and spaces are allowed.
+
+00:00:50.927 --> 00:00:53.110
+So a short sentence works well.
+
+00:00:53.110 --> 00:00:57.476
+Then a confirmation dialog asks
+whether to create the account,
+
+00:00:57.476 --> 00:01:00.081
+and nothing is sent until we say yes.
+
+00:01:00.782 --> 00:01:04.469
+The result is always the same
+check your email message,
+
+00:01:04.469 --> 00:01:07.820
+whether or not the address was
+already registered.
+
+00:01:07.820 --> 00:01:10.166
+That keeps account lookups private.
+
+00:01:10.877 --> 00:01:15.229
+If you try to sign in before
+confirming, the app explains why,
+
+00:01:15.229 --> 00:01:18.317
+and offers to resend the
+confirmation email.
+
+00:01:19.019 --> 00:01:21.853
+In this local setup, email is simulated,
+
+00:01:21.853 --> 00:01:25.750
+and the confirmation link is
+written to the server log.
+
+00:01:25.750 --> 00:01:28.018
+Opening it confirms the address,
+
+00:01:28.018 --> 00:01:32.411
+and the app removes the token from the
+address bar right away.
+
+00:01:33.118 --> 00:01:35.230
+Now the customer can sign in.
+
+00:01:38.633 --> 00:01:43.297
+Signed-in customers land on the
+catalog: eight demo products,
+
+00:01:43.297 --> 00:01:46.049
+each with a price and a stock state.
+
+00:01:46.753 --> 00:01:51.243
+Search matches name or SKU, and
+starts after two characters.
+
+00:01:51.243 --> 00:01:53.414
+One letter only shows a hint.
+
+00:01:53.414 --> 00:01:58.428
+Typing key narrows the list, and the
+search is kept in the address,
+
+00:01:58.428 --> 00:02:00.673
+so the page can be bookmarked.
+
+00:02:01.372 --> 00:02:03.445
+Sorting and filters work too.
+
+00:02:03.445 --> 00:02:06.877
+Here the list runs from most to
+least expensive,
+
+00:02:06.877 --> 00:02:11.524
+limited to products under one hundred
+dollars, and in stock only.
+
+00:02:12.239 --> 00:02:15.446
+Opening a product shows its
+details and stock,
+
+00:02:15.446 --> 00:02:18.863
+with a quantity picker and an
+add to cart button.
+
+00:02:19.569 --> 00:02:23.322
+Let's add the keyboard with the
+green Add to cart button,
+
+00:02:23.322 --> 00:02:25.955
+and then a wireless mouse from the list.
+
+00:02:25.955 --> 00:02:29.049
+The cart count in the header
+updates each time.
+
+00:02:29.755 --> 00:02:34.020
+In the cart, quantities can be
+changed and products removed,
+
+00:02:34.020 --> 00:02:36.295
+and the estimated total follows.
+
+00:02:36.295 --> 00:02:40.915
+The cart lives in this browser, and is
+cleared when you sign out.
+
+00:02:41.620 --> 00:02:47.826
+Placing the order asks for confirmation first,
+then checks current prices and stock,
+
+00:02:47.826 --> 00:02:49.526
+and sends it just once.
+
+00:02:49.526 --> 00:02:54.328
+The new order opens right away as
+pending, with its items, total,
+
+00:02:54.328 --> 00:02:55.732
+and status history.
+
+00:02:56.439 --> 00:03:02.131
+My orders lists every order, with filters for
+status and dates, and sorting.
+
+00:03:02.131 --> 00:03:05.127
+The filters stay in the address as well.
+
+00:03:05.838 --> 00:03:09.825
+A pending order can be cancelled,
+with an optional reason.
+
+00:03:09.825 --> 00:03:13.950
+The status changes to cancelled, and
+the history records it.
+
+00:03:14.659 --> 00:03:16.841
+My account shows the profile.
+
+00:03:16.841 --> 00:03:18.571
+The email is read only.
+
+00:03:18.571 --> 00:03:22.408
+Edit profile changes the name
+and the phone number.
+
+00:03:22.408 --> 00:03:26.696
+Save changes stays disabled until
+something is different,
+
+00:03:26.696 --> 00:03:29.179
+and saving asks for confirmation.
+
+00:03:29.888 --> 00:03:33.206
+Changing the password asks for
+confirmation too.
+
+00:03:33.206 --> 00:03:38.528
+It then signs you out on every device, so you
+sign in again with the new one.
+
+00:03:43.534 --> 00:03:48.094
+Sign out everywhere ends the sessions
+on all devices at once.
+
+00:03:48.796 --> 00:03:52.762
+If you forget the password, enter
+the email, confirm,
+
+00:03:52.762 --> 00:03:55.455
+and you always see the same message.
+
+00:03:55.455 --> 00:04:01.516
+The reset link, again from the server log,
+opens a page to choose a new password.
+
+00:04:01.516 --> 00:04:05.332
+After one more confirmation, you
+return to sign-in.
+
+00:04:06.231 --> 00:04:08.947
+Customers cannot open the back office.
+
+00:04:08.947 --> 00:04:12.591
+The admin address shows a
+not-allowed page instead.
+
+00:04:13.297 --> 00:04:15.888
+Delete account explains what happens.
+
+00:04:15.888 --> 00:04:20.440
+Personal details are erased, order
+records are kept without them,
+
+00:04:20.440 --> 00:04:22.471
+and you cannot sign in again.
+
+00:04:22.471 --> 00:04:26.113
+It asks for the current password
+and a confirmation.
+
+00:04:26.814 --> 00:04:30.558
+Afterwards, the same
+credentials no longer work.
+
+00:04:33.935 --> 00:04:38.926
+Administrators sign in on the same page,
+and land in the back office.
+
+00:04:38.926 --> 00:04:44.351
+The dashboard shows the low-stock count, and
+the last thirty days of sales.
+
+00:04:45.063 --> 00:04:50.844
+The Products section lists every product,
+with search, sorting, and paging.
+
+00:04:50.844 --> 00:04:56.703
+The Edit button is yellow and Delete is red,
+so the risky action stands out.
+
+00:04:57.407 --> 00:05:01.044
+Creating a product validates
+the form first.
+
+00:05:01.044 --> 00:05:07.823
+Then the name, SKU, description, price, and
+stock are saved, after a confirmation.
+
+00:05:09.352 --> 00:05:14.179
+Editing loads the latest version and
+saves with a concurrency check,
+
+00:05:14.179 --> 00:05:17.799
+so two admins cannot silently
+overwrite each other.
+
+00:05:17.799 --> 00:05:19.432
+Here I raise the stock.
+
+00:05:20.134 --> 00:05:22.390
+Deleting asks for confirmation.
+
+00:05:22.390 --> 00:05:26.393
+It is a soft delete: customers
+stop seeing the product,
+
+00:05:26.393 --> 00:05:29.086
+and existing orders keep their lines.
+
+00:05:29.796 --> 00:05:33.972
+With Include deleted ticked, the
+product shows as deleted,
+
+00:05:33.972 --> 00:05:35.844
+and one click restores it.
+
+00:05:37.800 --> 00:05:42.619
+That is the customer portal, and the
+first part of the back office.
+
+00:05:42.619 --> 00:05:45.927
+Screens for customers, orders,
+reports, users,
+
+00:05:45.927 --> 00:05:49.092
+and audit logs are not in the
+interface yet.
+
+00:05:49.092 --> 00:05:52.256
+For now those are available
+through the API.
+
+00:05:52.256 --> 00:05:57.938
+To try it yourself, start the stack with
+docker compose up, and open localhost,
+
+00:05:57.938 --> 00:05:59.808
+port eight zero eight one.

@@ -10,7 +10,7 @@ The API itself has no UI; a separate React web front end sits behind an ASP.NET 
 
 A narrated walkthrough (about 1 min 45 s) of the running API in the Scalar UI. It checks the health endpoints, signs in as Admin to get a bearer token, then calls the products, customers and orders endpoints with that token.
 
-**[Orders Shop web: React front end demo](https://www.loom.com/share/6a5947ed42944354bd3e15c2c57c2def)**
+**[Orders Shop Web Demo (Bootstrap) - Customer portal and back office](https://www.loom.com/share/2d7133e432f84859a80b386570740c1d)**
 
 A narrated walkthrough (about 5 min 20 s) of the React web front end (web 0.1.0) running against the API with demo data. It covers the customer portal (sign-up and email confirmation, catalog search and filters, cart, placing and cancelling orders, profile, password change and reset, account deletion) and the first part of the back office (dashboard and product management). The customer, order, report, user and audit-log admin screens are not built yet. The voice is AI-generated.
 

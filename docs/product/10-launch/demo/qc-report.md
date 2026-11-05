@@ -47,3 +47,22 @@ Video: `exports/orders-architecture-demo.mp4` | SHA-256: `f2425af9d36466aaacef80
 | 9 | Status honest | High | Pass | Closing (re-recorded 2026-10-31) says proof of concept on a feature branch, to be merged to main after final review |
 
 **Result:** Pass. Not yet reviewed by `market-reviewer`; the user approved the upload on 2026-10-31 without that review.
+
+---
+
+# Demo quality check: web front end v2 (Bootstrap Lumen + SweetAlert2)
+
+Video: `exports/orders-shop-web-demo-v2.mp4` (not committed) | SHA-256: `afe791e459d7def89b8a76c1a5107b151fa2f74191d96b2bd62e3a25b8cb283c` | App: web 0.1.0, commit cfe3290 (image rebuilt before recording) | Checked: 2026-11-05
+
+| # | Check | Result | Notes |
+|---|---|---|---|
+| 1 | Journeys J1-J5 shown start to finish | Pass | 31 recorder steps passed (`web2-record.mjs`), plus a dry run first |
+| 2 | New UI shown: Lumen theme, floating labels, live validation, SweetAlert2 confirmations, green/yellow/red buttons | Pass | Frames reviewed by eye (create-account dialog, order page, product form) |
+| 3 | Private data / secrets | Pass | Only generated example.test address and seeded dev admin address; admin password never shown |
+| 4 | Format | Pass | H.264, 1920x1080, 30 fps, AAC 48 kHz, 361.4 s (6:01), -16.3 LUFS |
+| 5 | Captions | Pass | 89 cues, .srt/.vtt plus soft track; 7 chapters as in v1 |
+| 6 | AI voice disclosed | Pass | End card |
+
+**Result:** Pass (self-check only). Not reviewed by `market-reviewer`; not uploaded.
+
+**Notes:** the stale "Fix 1 problem" alert stays visible on the register form until it is submitted (app behaviour, left as is). Recorded at 1280x720 and upscaled, so text is slightly soft. The edge-tts voice sends narration text to Microsoft; licence still to be recorded by `market-legal-check` before publishing.
