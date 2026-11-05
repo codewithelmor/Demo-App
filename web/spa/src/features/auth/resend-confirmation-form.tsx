@@ -40,7 +40,7 @@ export function ResendConfirmationForm({
     formState: { errors },
   } = useForm<EmailValues>({
     resolver: zodResolver(emailSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { email: defaultEmail },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, ['email'])

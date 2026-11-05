@@ -35,6 +35,7 @@ export function DeleteAccountRoute() {
     setFocus,
     formState: { errors },
   } = useForm<DeleteAccountValues>({
+    mode: 'onChange',
     resolver: zodResolver(deleteAccountSchema),
     defaultValues: { currentPassword: '', understood: false },
   })

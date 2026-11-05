@@ -57,6 +57,7 @@ export function SignInRoute() {
     resetField,
     formState: { errors },
   } = useForm<SignInValues>({
+    mode: 'onChange',
     resolver: zodResolver(signInSchema),
     defaultValues: { email: '', password: '' },
   })

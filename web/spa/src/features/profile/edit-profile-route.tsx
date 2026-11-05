@@ -104,7 +104,11 @@ function EditForm({ data }: { data: ProfileData }) {
     setValue,
     control,
     formState: { errors },
-  } = useForm<ProfileValues>({ resolver: zodResolver(profileSchema), defaultValues: latest })
+  } = useForm<ProfileValues>({
+    mode: 'onChange',
+    resolver: zodResolver(profileSchema),
+    defaultValues: latest,
+  })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, fieldNames)
   const typed = useWatch({ control })
 
@@ -112,6 +116,10 @@ function EditForm({ data }: { data: ProfileData }) {
   // Only the fields the user changed from what they opened are kept (baseline = the values when the form opened).
   const [mine, setMine] = useState<Partial<ProfileValues> | undefined>()
   const [baseline, setBaseline] = useState(latest)
+  // Save is only available when a field differs from the values the form opened with (or reloaded after a conflict).
+  const hasChanges = fieldNames.some(
+    (field) => (typed[field] ?? baseline[field]) !== baseline[field],
+  )
   const [conflicts, setConflicts] = useState(0)
   const conflictRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -256,6 +264,7 @@ function EditForm({ data }: { data: ProfileData }) {
             pendingLabel="Saving…"
             pending={mutation.isPending}
             secondsLeft={locked ? secondsLeft : 0}
+            disabled={!hasChanges}
           />
           <Link to="/account" className={buttonVariants({ variant: 'outline' })}>
             Cancel

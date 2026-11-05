@@ -72,7 +72,7 @@ export function RegisterRoute() {
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
     // Check a field when the user leaves it, then on every keystroke once it was touched.
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { firstName: '', lastName: '', email: '', password: '', phone: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, fieldNames)

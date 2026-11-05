@@ -30,7 +30,7 @@ export function ChangePasswordRoute() {
     formState: { errors, touchedFields },
   } = useForm<ChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { currentPassword: '', newPassword: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, [

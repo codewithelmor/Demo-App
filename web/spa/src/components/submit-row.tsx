@@ -10,6 +10,8 @@ interface SubmitRowProps {
   pending: boolean
   /** Seconds left of a 429 Retry-After; the button stays disabled while this is above 0 (NFR-F23). */
   secondsLeft?: number
+  /** Keeps the button disabled, for example while a form has no changes to save. */
+  disabled?: boolean
 }
 
 /**
@@ -19,12 +21,18 @@ interface SubmitRowProps {
  * field's blur check shows its error, the form grows, the button moves away under the pointer and the
  * click is lost: the user must click twice. Submitting validates every field anyway.
  */
-export function SubmitRow({ label, pendingLabel, pending, secondsLeft = 0 }: SubmitRowProps) {
+export function SubmitRow({
+  label,
+  pendingLabel,
+  pending,
+  secondsLeft = 0,
+  disabled = false,
+}: SubmitRowProps) {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Button
         type="submit"
-        disabled={pending || secondsLeft > 0}
+        disabled={disabled || pending || secondsLeft > 0}
         aria-busy={pending}
         onMouseDown={(event) => {
           event.preventDefault()

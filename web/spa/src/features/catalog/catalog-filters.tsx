@@ -53,6 +53,7 @@ export function CatalogFilters({ params, onApply, onClear, canClear }: CatalogFi
     handleSubmit,
     formState: { errors },
   } = useForm<FiltersValues>({
+    mode: 'onChange',
     resolver: zodResolver(filtersSchema),
     defaultValues: {
       minPrice: params.minPrice === undefined ? '' : String(params.minPrice),

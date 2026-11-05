@@ -2,7 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams, type LoaderFunctionArgs } from 'react-router'
 import { productKeys } from '@/api/products'
 import { FormAlert } from '@/components/form-alert'
@@ -123,13 +123,20 @@ function ProductForm({ data }: { data?: AdminProductData }) {
     handleSubmit,
     setError,
     setValue,
+    control,
     formState: { errors },
   } = useForm<ProductFormInput, unknown, ProductFormValues>({
+    mode: 'onChange',
     resolver: zodResolver(productSchema),
     defaultValues: data ? toInput(data) : emptyValues,
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, fieldNames)
   const [etag, setEtag] = useState(data?.etag)
+  // The saved values the form opened with (or reloaded after a conflict); an edit can only be saved once one differs.
+  const [baseline, setBaseline] = useState(data ? toInput(data) : emptyValues)
+  const typed = useWatch({ control })
+  const hasChanges =
+    !editing || fieldNames.some((field) => (typed[field] ?? baseline[field]) !== baseline[field])
   const [conflicts, setConflicts] = useState(0)
   const conflictRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -153,6 +160,7 @@ function ProductForm({ data }: { data?: AdminProductData }) {
           const latest = toInput(fresh)
           for (const field of fieldNames) setValue(field, latest[field])
           setEtag(fresh.etag)
+          setBaseline(latest)
           setConflicts((count) => count + 1)
         } catch (reloadError) {
           fail(reloadError)
@@ -219,6 +227,7 @@ function ProductForm({ data }: { data?: AdminProductData }) {
             pendingLabel="Saving…"
             pending={mutation.isPending}
             secondsLeft={locked ? secondsLeft : 0}
+            disabled={!hasChanges}
           />
           <Link to="/admin/products" className={buttonVariants({ variant: 'outline' })}>
             Cancel

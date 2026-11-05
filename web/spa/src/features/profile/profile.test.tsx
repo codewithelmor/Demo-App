@@ -39,6 +39,13 @@ function serveProfile(initial: Profile = profile, etag = '"1"') {
   return state
 }
 
+/** Types a different phone number, so the form has a change and Save is enabled. */
+async function changePhone(user: ReturnType<typeof userEvent.setup>) {
+  const phone = screen.getByLabelText('Phone (optional)')
+  await user.clear(phone)
+  await user.type(phone, '+14155550456')
+}
+
 describe('my account', () => {
   it('shows name, email with "contact support", phone and member since [US-F033]', async () => {
     signedInAs(customerUser)
@@ -142,6 +149,7 @@ describe('edit profile', () => {
     // The ETag from the PUT response is the one kept: a second save sends it.
     await user.click(screen.getByRole('link', { name: 'Edit profile' }))
     await screen.findByLabelText('First name')
+    await changePhone(user)
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
     await waitFor(() => {
       expect(puts).toHaveLength(2)
@@ -221,6 +229,7 @@ describe('edit profile', () => {
     server.use(http.put('*/api/v1/customers/me', () => problem(428, 'precondition-required')))
     const { user } = await openEdit()
 
+    await changePhone(user)
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
     expect(await screen.findByText('Something went wrong on our side.')).toBeVisible()
@@ -236,6 +245,7 @@ describe('edit profile', () => {
     )
     const { user } = await openEdit()
 
+    await changePhone(user)
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
     const phone = screen.getByLabelText('Phone (optional)')
@@ -274,6 +284,7 @@ describe('edit profile', () => {
     )
     const { user } = await openEdit()
 
+    await changePhone(user)
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
     expect(await screen.findByText('Too many attempts. Try again in 30 seconds.')).toBeVisible()
@@ -295,6 +306,7 @@ describe('edit profile', () => {
     )
     const { user } = await openEdit()
 
+    await changePhone(user)
     await user.dblClick(screen.getByRole('button', { name: 'Save changes' }))
     expect(await screen.findByRole('button', { name: 'Saving…' })).toBeDisabled()
     release()

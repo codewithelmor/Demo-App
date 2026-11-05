@@ -42,6 +42,7 @@ export function OrdersFilters({ params, onApply, onClear, canClear }: OrdersFilt
     handleSubmit,
     formState: { errors },
   } = useForm<FiltersValues>({
+    mode: 'onChange',
     resolver: zodResolver(filtersSchema),
     defaultValues: { statuses: params.statuses, from: params.from ?? '', to: params.to ?? '' },
   })

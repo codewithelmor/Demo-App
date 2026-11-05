@@ -88,7 +88,7 @@ function ResetForm({ link }: { link: ResetLink }) {
     formState: { errors, touchedFields },
   } = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetPasswordSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { newPassword: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, ['newPassword'])

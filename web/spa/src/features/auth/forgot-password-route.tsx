@@ -28,7 +28,7 @@ export function ForgotPasswordRoute() {
     formState: { errors },
   } = useForm<EmailValues>({
     resolver: zodResolver(emailSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { email: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, ['email'])
