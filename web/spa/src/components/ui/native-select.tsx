@@ -1,16 +1,12 @@
-// shadcn/ui "native select", copied into the project (you own and can change this code).
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
-/** A dropdown using the browser's built-in `<select>`, which works well with keyboards, phones and screen readers. */
+/** A dropdown using the browser's built-in `<select>` (Bootstrap `form-select`). */
 function NativeSelect({ className, ...props }: ComponentProps<'select'>) {
   return (
     <select
       data-slot="native-select"
-      className={cn(
-        'h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50',
-        className,
-      )}
+      className={cn('form-select', props['aria-invalid'] && 'is-invalid', className)}
       {...props}
     />
   )

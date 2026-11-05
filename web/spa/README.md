@@ -86,10 +86,7 @@ The BFF limits per IP (anonymous 60/min, auth 10/min), so the compose file raise
 
 ## Accepted risks
 
-- **`shadcn` CLI as a dev dependency** (`package.json`, `devDependencies`) pulls in a large dev-only tree
-  (`npm audit` shows 3 low findings, dev only; `npm audit --omit=dev` shows 0). It never reaches the bundle. We keep it
-  for scaffolding components and review the lockfile on every bump; if it becomes a problem, drop it and use
-  `npx shadcn@<pinned> add ...` instead.
+- **Bootstrap 5.3.8 + Bootswatch Lumen (CSS only):** imported in `src/main.tsx`; no Bootstrap JavaScript is used (Radix handles dialog behaviour). The theme's Google Fonts `@import` is stripped by `stripRemoteFonts` in `vite.config.ts` because the CSP allows `style-src 'self'` only, so Lumen uses its fallback font stack. Form fields use Bootstrap floating labels through `FormField`.
 - **CSP and Radix dialogs (finding L-3, closed):** Radix modals inject a scroll-lock `<style>`; the BFF sends a
   per-response nonce in `style-src` and `src/app/csp-nonce.ts` gives it to Radix. Zod's `new Function` probe also
   tripped `script-src`; `src/lib/zod.ts` turns the JIT off and is the only runtime import of `zod` (a unit test

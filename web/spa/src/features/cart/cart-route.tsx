@@ -120,16 +120,16 @@ export function CartRoute() {
   }
 
   return (
-    <section className="grid gap-4">
+    <section className="d-grid gap-3">
       <title>Cart · Orders Shop</title>
-      <h1 ref={headingRef} tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 ref={headingRef} tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Cart ({cart.count} {cart.count === 1 ? 'product' : 'products'})
       </h1>
 
       {/* Always in the page, so a removal is announced. */}
-      <div role="status" className="min-h-6 text-sm">
+      <div role="status" className="min-h-6 small">
         {removed && (
-          <p className="flex flex-wrap items-center gap-2">
+          <p className="d-flex flex-wrap align-items-center gap-2">
             Removed {removed.name}.
             <Button
               type="button"
@@ -152,7 +152,7 @@ export function CartRoute() {
       </div>
 
       {cart.count === 0 ? (
-        <div className="grid justify-items-start gap-3">
+        <div className="d-grid justify-items-start gap-2">
           <p>Your cart is empty. Browse products to add some.</p>
           <Link to="/products" className={buttonVariants()}>
             Browse products
@@ -160,7 +160,7 @@ export function CartRoute() {
         </div>
       ) : (
         <>
-          <ul className="grid gap-3">
+          <ul className="d-grid gap-2">
             {rows.map(({ line, state, conflict }) => (
               <CartRow
                 key={line.productId}
@@ -178,14 +178,14 @@ export function CartRoute() {
             ))}
           </ul>
 
-          <div className="grid gap-1 rounded-lg border p-4">
-            <p className="text-lg font-semibold">Estimated total {formatMoney(totalCents / 100)}</p>
-            <p className="text-sm text-muted-foreground">
+          <div className="d-grid gap-1 card card-body shadow-sm p-3">
+            <p className="fs-5 fw-semibold">Estimated total {formatMoney(totalCents / 100)}</p>
+            <p className="small text-body-secondary">
               Final total is confirmed when you place the order.
             </p>
           </div>
           {cart.count >= MAX_LINES && (
-            <p className="text-sm">
+            <p className="small">
               Your cart has {MAX_LINES} products, the most for one order. Max {MAX_LINES} products
               per order.
             </p>
@@ -219,7 +219,7 @@ interface CartRowProps {
 function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) {
   if (state.kind === 'loading') {
     return (
-      <li className="rounded-lg border p-4 text-sm text-muted-foreground" aria-busy="true">
+      <li className="card card-body shadow-sm p-3 small text-body-secondary" aria-busy="true">
         Loading product…
       </li>
     )
@@ -227,9 +227,9 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
 
   if (state.kind === 'gone' || state.kind === 'error') {
     return (
-      <li className="grid justify-items-start gap-2 rounded-lg border p-4">
-        <p className="font-medium">Product</p>
-        <p role="alert" className="text-sm text-destructive">
+      <li className="d-grid justify-items-start gap-2 card card-body shadow-sm p-3">
+        <p className="fw-medium">Product</p>
+        <p role="alert" className="small text-danger">
           {state.kind === 'gone' ? 'No longer available.' : messageFor(state.error)}
         </p>
         <Button
@@ -251,14 +251,12 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
   const max = Math.min(MAX_QUANTITY, Math.max(product.stockQuantity, 1))
 
   return (
-    <li className="grid gap-3 rounded-lg border p-4">
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-lg font-medium">
-          <Link to={`/products/${product.id}`} className="underline-offset-4 hover:underline">
-            {product.name}
-          </Link>
+    <li className="d-grid gap-2 card card-body shadow-sm p-3">
+      <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+        <h2 className="fs-5 fw-medium">
+          <Link to={`/products/${product.id}`}>{product.name}</Link>
         </h2>
-        <p className="font-semibold">{formatMoney(product.price)}</p>
+        <p className="fw-semibold">{formatMoney(product.price)}</p>
       </div>
       {priceChanged && (
         <div>
@@ -267,17 +265,17 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
       )}
 
       {state.kind === 'out-of-stock' && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="small text-danger">
           Out of stock. Remove it to continue.
         </p>
       )}
       {conflict === 'stock' && state.kind !== 'low-stock' && state.kind !== 'out-of-stock' && (
-        <p role="alert" className="text-sm text-destructive">
+        <p role="alert" className="small text-danger">
           Not enough stock for this quantity. Change the quantity or remove it.
         </p>
       )}
       {state.kind === 'low-stock' && (
-        <div role="alert" className="flex flex-wrap items-center gap-2 text-sm text-destructive">
+        <div role="alert" className="d-flex flex-wrap align-items-center gap-2 small text-danger">
           <span>Only {product.stockQuantity} left.</span>
           <Button
             type="button"
@@ -292,7 +290,7 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
         </div>
       )}
 
-      <div className="flex flex-wrap items-end justify-between gap-3">
+      <div className="d-flex flex-wrap align-items-end justify-content-between gap-2">
         {state.kind !== 'out-of-stock' && (
           <QuantityInput
             label={`Quantity of ${product.name}`}
@@ -301,8 +299,8 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
             onChange={onQuantity}
           />
         )}
-        <div className="flex items-center gap-3">
-          <p className="font-medium">
+        <div className="d-flex align-items-center gap-2">
+          <p className="fw-medium">
             {state.kind === 'out-of-stock'
               ? ''
               : formatMoney(lineCents(product.price, line.quantity) / 100)}

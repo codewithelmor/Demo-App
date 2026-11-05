@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -28,7 +29,7 @@ export function ForgotPasswordRoute() {
     formState: { errors },
   } = useForm<EmailValues>({
     resolver: zodResolver(emailSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { email: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, ['email'])
@@ -41,19 +42,27 @@ export function ForgotPasswordRoute() {
     onError: fail,
   })
 
-  const onSubmit = (values: EmailValues) => {
+  const onSubmit = async (values: EmailValues) => {
+    if (
+      !(await confirmSubmit({
+        title: 'Send the reset link?',
+        text: 'We will email a link to reset your password.',
+        confirmLabel: 'Send link',
+      }))
+    )
+      return
     clear()
     setSent(false)
     mutation.mutate(values.email)
   }
 
   return (
-    <section className="mx-auto grid max-w-md gap-6 rounded-lg border p-6">
+    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
       <title>Reset your password · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Reset your password
       </h1>
-      <p className="text-sm text-muted-foreground">
+      <p className="small text-body-secondary">
         Enter your email and we will send you a link to choose a new password.
       </p>
       <form
@@ -61,7 +70,7 @@ export function ForgotPasswordRoute() {
         onSubmit={(event) => {
           void handleSubmit(onSubmit)(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
         <FormAlert failure={failure} />
         <FormField
@@ -77,7 +86,7 @@ export function ForgotPasswordRoute() {
           pending={mutation.isPending}
           secondsLeft={locked ? secondsLeft : 0}
         />
-        <p role="status" className="text-sm">
+        <p role="status" className="small">
           {sent ? FORGOT_RESULT : ''}
         </p>
       </form>

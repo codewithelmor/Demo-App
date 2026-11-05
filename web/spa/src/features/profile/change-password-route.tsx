@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
 import { useForm, useWatch } from 'react-hook-form'
 import { FormAlert } from '@/components/form-alert'
@@ -30,7 +31,7 @@ export function ChangePasswordRoute() {
     formState: { errors, touchedFields },
   } = useForm<ChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { currentPassword: '', newPassword: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, [
@@ -49,7 +50,9 @@ export function ChangePasswordRoute() {
     },
   })
 
-  const onSubmit = (values: ChangePasswordValues) => {
+  const onSubmit = async (values: ChangePasswordValues) => {
+    if (!(await confirmSubmit({ title: 'Change your password?', confirmLabel: 'Change password' })))
+      return
     clear()
     mutation.mutate(values)
   }
@@ -65,7 +68,7 @@ export function ChangePasswordRoute() {
   return (
     <AccountLayout>
       <title>Change password · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Change password
       </h1>
       <p>After you change it, you will be signed out on all devices.</p>
@@ -75,7 +78,7 @@ export function ChangePasswordRoute() {
         onSubmit={(event) => {
           void handleSubmit(onSubmit)(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
         <FormField
           label="Current password"

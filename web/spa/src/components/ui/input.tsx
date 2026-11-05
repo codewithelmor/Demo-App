@@ -1,18 +1,18 @@
-// shadcn/ui component, copied into the project (you own and can change this code).
-// Styling uses Tailwind CSS classes; `cn()` merges them so a caller's `className` can override the defaults.
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
-/** A single-line text box with the app's styling. Turns red when marked `aria-invalid`. */
-function Input({ className, type = 'text', ...props }: ComponentProps<'input'>) {
+/**
+ * A single-line text box (Bootstrap `form-control`). Turns red when marked `aria-invalid`.
+ * Floating labels need a placeholder to detect "empty", so a blank one is set when none is given;
+ * {@link FormField} puts the label after the input.
+ */
+function Input({ className, type = 'text', placeholder = ' ', ...props }: ComponentProps<'input'>) {
   return (
     <input
       type={type}
       data-slot="input"
-      className={cn(
-        'h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50 aria-invalid:border-destructive',
-        className,
-      )}
+      placeholder={placeholder}
+      className={cn('form-control', props['aria-invalid'] && 'is-invalid', className)}
       {...props}
     />
   )

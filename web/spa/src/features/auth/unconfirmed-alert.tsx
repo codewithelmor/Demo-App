@@ -34,12 +34,12 @@ export function UnconfirmedAlert({ email, message }: { email: string; message: s
   })
 
   return (
-    <div role="alert" className="grid justify-items-start gap-2 rounded-md border p-3 text-sm">
+    <div role="alert" className="alert alert-secondary d-grid justify-items-start gap-2 mb-0 small">
       {sent ? (
         // Focus moves here: the button that had it is gone.
         <p
           tabIndex={-1}
-          className="outline-none"
+          className="focus-target"
           ref={(element) => {
             element?.focus()
           }}

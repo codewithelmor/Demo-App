@@ -2,9 +2,9 @@ import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Link, useLocation, useSearchParams, type LoaderFunctionArgs } from 'react-router'
 import { SearchBox } from '@/components/search-box'
+import { FormField } from '@/components/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
 import type { Product } from '@/api/products'
 import { productsQuery } from '@/features/catalog/catalog-api'
 import { apiErrorMessage } from '@/lib/error-message'
@@ -98,22 +98,22 @@ export function CatalogRoute() {
   }
 
   return (
-    <section className="grid gap-4">
+    <section className="d-grid gap-3">
       <title>Products · Orders Shop</title>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+        <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
           Products
         </h1>
         {/* Always in the page: a new count is announced when search, filters or paging change the list. */}
-        <p role="status" className="min-h-5 text-sm text-muted-foreground">
+        <p role="status" className="min-h-5 small text-body-secondary">
           {data
             ? `${String(data.totalCount)} ${data.totalCount === 1 ? 'product' : 'products'}`
             : ''}
         </p>
       </div>
 
-      <div className="flex flex-wrap items-start gap-4">
-        <div className="min-w-56 flex-1">
+      <div className="d-flex flex-wrap align-items-start gap-3">
+        <div className="min-w-56 flex-fill">
           <SearchBox
             value={params.search ?? ''}
             onSearch={(search) => {
@@ -121,23 +121,26 @@ export function CatalogRoute() {
             }}
           />
         </div>
-        <div className="grid w-48 gap-1.5">
-          <Label htmlFor="catalog-sort">Sort</Label>
-          <NativeSelect
-            id="catalog-sort"
-            value={params.sort}
-            onChange={(event) => {
-              const sort = event.target.value
-              if (isSort(sort)) update((current) => ({ ...current, sort, page: 1 }))
-            }}
-          >
-            {SORTS.map((sort) => (
-              <option key={sort} value={sort}>
-                {SORT_LABELS[sort]}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
+        <FormField
+          className="w-48"
+          label="Sort"
+          render={(a11y) => (
+            <NativeSelect
+              {...a11y}
+              value={params.sort}
+              onChange={(event) => {
+                const sort = event.target.value
+                if (isSort(sort)) update((current) => ({ ...current, sort, page: 1 }))
+              }}
+            >
+              {SORTS.map((sort) => (
+                <option key={sort} value={sort}>
+                  {SORT_LABELS[sort]}
+                </option>
+              ))}
+            </NativeSelect>
+          )}
+        />
       </div>
 
       <CatalogFilters
@@ -150,39 +153,38 @@ export function CatalogRoute() {
         onClear={clearFilters}
       />
       {filtersActive && (
-        <p className="text-sm text-muted-foreground">
+        <p className="small text-body-secondary">
           {filterCount(params)} {filterCount(params) === 1 ? 'filter' : 'filters'} applied
         </p>
       )}
 
       {/* Always in the page, so cart changes are announced. */}
-      <p role="status" className="min-h-5 text-sm">
+      <p role="status" className="min-h-5 small">
         {notice?.kind === 'status' ? <span key={notice.id}>{notice.text}</span> : null}
       </p>
       {notice?.kind === 'alert' && (
-        <p role="alert" className="rounded-md border border-destructive p-3 text-sm">
+        <p role="alert" className="alert alert-danger mb-0 small">
           {notice.text}
         </p>
       )}
 
       {isPending && (
         <>
-          <p role="status" className="sr-only">
+          <p role="status" className="visually-hidden">
             Loading products…
           </p>
-          <ul aria-hidden="true" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul aria-hidden="true" className="card-grid list-unstyled mb-0 p-0">
             {Array.from({ length: 8 }, (_, index) => (
-              <li key={index} className="h-40 animate-pulse rounded-lg border bg-muted" />
+              <li key={index} className="h-40 placeholder-glow">
+                <span className="placeholder w-100 h-100 rounded-3" />
+              </li>
             ))}
           </ul>
         </>
       )}
 
       {isError && (
-        <div
-          role="alert"
-          className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-        >
+        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -197,7 +199,7 @@ export function CatalogRoute() {
       )}
 
       {data && data.items.length === 0 && (
-        <div className="grid justify-items-start gap-3">
+        <div className="d-grid justify-items-start gap-2">
           {params.page > 1 ? (
             <>
               <p>No products on this page.</p>
@@ -219,7 +221,7 @@ export function CatalogRoute() {
       )}
 
       {data && data.items.length > 0 && (
-        <ul aria-busy={isFetching} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul aria-busy={isFetching} className="card-grid list-unstyled mb-0 p-0">
           {data.items.map((product) => (
             <ProductCard
               key={product.id}
@@ -233,13 +235,13 @@ export function CatalogRoute() {
       )}
 
       {data && data.totalCount > 0 && (
-        <nav aria-label="Pagination" className="flex items-center gap-3">
+        <nav aria-label="Pagination" className="d-flex align-items-center gap-2">
           {params.page > 1 ? (
             <Link to={pageLink(params.page - 1)} className={buttonVariants({ variant: 'outline' })}>
               Previous
             </Link>
           ) : null}
-          <span className="text-sm">
+          <span className="small">
             Page {params.page} of {totalPages}
           </span>
           {params.page < totalPages ? (

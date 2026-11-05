@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
 import { useForm, useWatch } from 'react-hook-form'
 import { Link, useLoaderData, useNavigate } from 'react-router'
@@ -46,9 +47,9 @@ export function resetPasswordLoader({ request }: { request: Request }): ResetLin
 export function ResetPasswordRoute() {
   const link = useLoaderData<ResetLink | null>()
   return (
-    <section className="mx-auto grid max-w-md gap-6 rounded-lg border p-6">
+    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
       <title>Set a new password · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Set a new password
       </h1>
       {link ? <ResetForm link={link} /> : <MissingLink />}
@@ -88,7 +89,7 @@ function ResetForm({ link }: { link: ResetLink }) {
     formState: { errors, touchedFields },
   } = useForm<ResetPasswordValues>({
     resolver: zodResolver(resetPasswordSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { newPassword: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, ['newPassword'])
@@ -105,7 +106,9 @@ function ResetForm({ link }: { link: ResetLink }) {
     },
   })
 
-  const onSubmit = (values: ResetPasswordValues) => {
+  const onSubmit = async (values: ResetPasswordValues) => {
+    if (!(await confirmSubmit({ title: 'Set the new password?', confirmLabel: 'Set password' })))
+      return
     clear()
     mutation.mutate({ email: link.email, token: link.token, newPassword: values.newPassword })
   }
@@ -113,7 +116,7 @@ function ResetForm({ link }: { link: ResetLink }) {
   if (failure?.error.slug === 'invalid-token') {
     return (
       <>
-        <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
+        <div role="alert" className="alert alert-danger mb-0 small">
           <p>This link is invalid or expired.</p>
         </div>
         <RequestNewLink />
@@ -133,7 +136,7 @@ function ResetForm({ link }: { link: ResetLink }) {
         onSubmit={(event) => {
           void handleSubmit(onSubmit)(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
         <FormField
           label="Email"

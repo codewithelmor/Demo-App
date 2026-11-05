@@ -57,6 +57,7 @@ export function SignInRoute() {
     resetField,
     formState: { errors },
   } = useForm<SignInValues>({
+    mode: 'onChange',
     resolver: zodResolver(signInSchema),
     defaultValues: { email: '', password: '' },
   })
@@ -104,14 +105,14 @@ export function SignInRoute() {
   const reference = formError ? referenceFor(formError) : undefined
 
   return (
-    <section className="mx-auto grid max-w-md gap-6 rounded-lg border p-6">
+    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
       <title>Sign in · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Sign in
       </h1>
 
       {reasonMessage && (
-        <p role="status" className="rounded-md bg-muted p-3 text-sm">
+        <p role="status" className="alert alert-info mb-0 small">
           {reasonMessage}
         </p>
       )}
@@ -121,9 +122,9 @@ export function SignInRoute() {
       )}
 
       {formError && unconfirmedEmail === undefined && (
-        <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
+        <div role="alert" className="alert alert-danger mb-0 small">
           <p>{locked ? rateLimitMessage(secondsLeft) : messageFor(formError)}</p>
-          {reference && <p className="mt-1 text-muted-foreground">Reference: {reference}</p>}
+          {reference && <p className="mt-1 text-body-secondary">Reference: {reference}</p>}
         </div>
       )}
 
@@ -132,7 +133,7 @@ export function SignInRoute() {
         onSubmit={(event) => {
           void handleSubmit(onSubmit)(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
         <FormField
           label="Email"
@@ -167,7 +168,7 @@ export function SignInRoute() {
         </div>
       </form>
 
-      <div className="grid gap-1 text-sm">
+      <div className="d-grid gap-1 small">
         <p>
           New here? <TextLink to="/register">Create account</TextLink>
         </p>

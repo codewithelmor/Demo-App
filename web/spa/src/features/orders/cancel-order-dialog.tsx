@@ -111,9 +111,9 @@ export function CancelOrderDialog({ orderId, onConflict }: CancelOrderDialogProp
         </AlertDialogDescription>
 
         {failure && (
-          <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
-            <p>{messageFor(failure)}</p>
-            {reference && <p className="mt-1 text-muted-foreground">Reference: {reference}</p>}
+          <div role="alert" className="alert alert-danger small mb-0">
+            <p className="mb-0">{messageFor(failure)}</p>
+            {reference && <p className="mt-1 mb-0 opacity-75">Reference: {reference}</p>}
           </div>
         )}
 
@@ -132,7 +132,7 @@ export function CancelOrderDialog({ orderId, onConflict }: CancelOrderDialogProp
           )}
         />
 
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="d-flex flex-wrap justify-content-end gap-2">
           <AlertDialogCancel asChild>
             <Button type="button" variant="outline" disabled={mutation.isPending}>
               Keep order
@@ -148,7 +148,7 @@ export function CancelOrderDialog({ orderId, onConflict }: CancelOrderDialogProp
             {mutation.isPending ? 'Cancelling…' : 'Cancel order'}
           </Button>
           {locked && (
-            <span aria-hidden="true" className="self-center text-sm text-muted-foreground">
+            <span aria-hidden="true" className="align-self-center small text-body-secondary">
               You can try again in {secondsLeft} s
             </span>
           )}

@@ -1,8 +1,9 @@
 /** FR-F052, FR-F053: create a product, and replace one with If-Match. */
+import { confirmSubmit } from '@/lib/confirm'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams, type LoaderFunctionArgs } from 'react-router'
 import { productKeys } from '@/api/products'
 import { FormAlert } from '@/components/form-alert'
@@ -50,9 +51,9 @@ const emptyValues: ProductFormInput = {
 /** Page for `/admin/products/new`. */
 export function AdminProductCreateRoute() {
   return (
-    <section className="grid max-w-xl gap-4">
+    <section className="d-grid max-w-xl gap-3">
       <title>New product · Back office · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         New product
       </h1>
       <ProductForm />
@@ -67,17 +68,14 @@ export function AdminProductEditRoute() {
     adminProductQuery(productId),
   )
   return (
-    <section className="grid max-w-xl gap-4">
+    <section className="d-grid max-w-xl gap-3">
       <title>Edit product · Back office · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Edit product
       </h1>
       {isPending && <p role="status">Loading product…</p>}
       {isError && (
-        <div
-          role="alert"
-          className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-        >
+        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
           <p>{apiErrorMessage(error)}</p>
           {!(error instanceof ApiError && error.status === 404) && (
             <Button
@@ -123,13 +121,20 @@ function ProductForm({ data }: { data?: AdminProductData }) {
     handleSubmit,
     setError,
     setValue,
+    control,
     formState: { errors },
   } = useForm<ProductFormInput, unknown, ProductFormValues>({
+    mode: 'onChange',
     resolver: zodResolver(productSchema),
     defaultValues: data ? toInput(data) : emptyValues,
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, fieldNames)
   const [etag, setEtag] = useState(data?.etag)
+  // The saved values the form opened with (or reloaded after a conflict); an edit can only be saved once one differs.
+  const [baseline, setBaseline] = useState(data ? toInput(data) : emptyValues)
+  const typed = useWatch({ control })
+  const hasChanges =
+    !editing || fieldNames.some((field) => (typed[field] ?? baseline[field]) !== baseline[field])
   const [conflicts, setConflicts] = useState(0)
   const conflictRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -153,6 +158,7 @@ function ProductForm({ data }: { data?: AdminProductData }) {
           const latest = toInput(fresh)
           for (const field of fieldNames) setValue(field, latest[field])
           setEtag(fresh.etag)
+          setBaseline(latest)
           setConflicts((count) => count + 1)
         } catch (reloadError) {
           fail(reloadError)
@@ -170,9 +176,9 @@ function ProductForm({ data }: { data?: AdminProductData }) {
           ref={conflictRef}
           role="alert"
           tabIndex={-1}
-          className="rounded-md border border-amber-600 p-3 text-sm outline-none"
+          className="alert alert-warning mb-0 small focus-target"
         >
-          <p className="font-medium">This product changed since you opened it.</p>
+          <p className="fw-medium">This product changed since you opened it.</p>
           <p>The form now shows the latest saved values. Apply your change again and save.</p>
         </div>
       )}
@@ -181,11 +187,15 @@ function ProductForm({ data }: { data?: AdminProductData }) {
         noValidate
         onSubmit={(event) => {
           clear()
-          void handleSubmit((values) => {
+          void handleSubmit(async (values) => {
+            if (
+              !(await confirmSubmit({ title: 'Save this product?', confirmLabel: 'Save product' }))
+            )
+              return
             mutation.mutate(values)
           })(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
         <FormField
           label="Name"
@@ -213,12 +223,13 @@ function ProductForm({ data }: { data?: AdminProductData }) {
           error={errors.stockQuantity?.message}
           render={(a11y) => <Input inputMode="numeric" {...a11y} {...register('stockQuantity')} />}
         />
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="d-flex flex-wrap align-items-center gap-2">
           <SubmitRow
             label={editing ? 'Save changes' : 'Create product'}
             pendingLabel="Saving…"
             pending={mutation.isPending}
             secondsLeft={locked ? secondsLeft : 0}
+            disabled={!hasChanges}
           />
           <Link to="/admin/products" className={buttonVariants({ variant: 'outline' })}>
             Cancel

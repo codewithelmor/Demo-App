@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { confirmSubmit } from '@/lib/confirm'
 import { useState, type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { orderKeys, placeOrder, type OrderItemInput } from '@/api/orders'
@@ -80,9 +81,17 @@ export function PlaceOrderPanel({ lines, blockedReason, onConflicts }: PlaceOrde
     },
   })
 
-  function submit() {
+  async function submit() {
     // The button is disabled while pending; this also stops a second call from the same event burst.
     if (mutation.isPending || blockedReason !== undefined) return
+    if (
+      !(await confirmSubmit({
+        title: 'Place this order?',
+        text: 'The items are reserved from stock.',
+        confirmLabel: 'Place order',
+      }))
+    )
+      return
     setFailure(undefined)
     onConflicts(new Map())
     mutation.mutate(lines.map((line) => ({ productId: line.productId, quantity: line.quantity })))
@@ -91,20 +100,22 @@ export function PlaceOrderPanel({ lines, blockedReason, onConflicts }: PlaceOrde
   const locked = rateLimited !== undefined && secondsLeft > 0
 
   return (
-    <div className="grid gap-3">
+    <div className="d-grid gap-2">
       {failure && <FailureAlert error={failure} />}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="d-flex flex-wrap align-items-center gap-2">
         <Button
           type="button"
           disabled={mutation.isPending || locked || blockedReason !== undefined}
           aria-busy={mutation.isPending}
-          onClick={submit}
+          onClick={() => {
+            void submit()
+          }}
         >
           {mutation.isPending ? 'Placing order…' : 'Place order'}
         </Button>
-        {blockedReason && <p className="text-sm">{blockedReason}</p>}
+        {blockedReason && <p className="small">{blockedReason}</p>}
         {locked && (
-          <span aria-hidden="true" className="text-sm text-muted-foreground">
+          <span aria-hidden="true" className="small text-body-secondary">
             You can try again in {secondsLeft} s
           </span>
         )}
@@ -123,7 +134,7 @@ function FailureAlert({ error }: { error: ApiError }) {
     body = (
       <p>
         We could not confirm that your order was placed. Check My orders before trying again.{' '}
-        <Link to="/orders" className="underline underline-offset-4">
+        <Link to="/orders" className="text-decoration-underline">
           My orders
         </Link>
       </p>
@@ -133,7 +144,7 @@ function FailureAlert({ error }: { error: ApiError }) {
     body = (
       <p>
         You have {max} open orders. Wait for one to be confirmed or cancel one.{' '}
-        <Link to="/orders" className="underline underline-offset-4">
+        <Link to="/orders" className="text-decoration-underline">
           View my orders
         </Link>
       </p>
@@ -147,9 +158,9 @@ function FailureAlert({ error }: { error: ApiError }) {
   }
 
   return (
-    <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
+    <div role="alert" className="alert alert-danger mb-0 small">
       {body}
-      {reference && <p className="mt-1 text-muted-foreground">Reference: {reference}</p>}
+      {reference && <p className="mt-1 text-body-secondary">Reference: {reference}</p>}
     </div>
   )
 }

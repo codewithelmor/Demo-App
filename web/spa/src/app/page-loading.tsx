@@ -5,7 +5,7 @@
  */
 export function PageLoading() {
   return (
-    <p role="status" className="p-4">
+    <p role="status" className="p-3">
       Loading…
     </p>
   )

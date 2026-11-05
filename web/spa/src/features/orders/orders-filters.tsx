@@ -42,6 +42,7 @@ export function OrdersFilters({ params, onApply, onClear, canClear }: OrdersFilt
     handleSubmit,
     formState: { errors },
   } = useForm<FiltersValues>({
+    mode: 'onChange',
     resolver: zodResolver(filtersSchema),
     defaultValues: { statuses: params.statuses, from: params.from ?? '', to: params.to ?? '' },
   })
@@ -62,13 +63,13 @@ export function OrdersFilters({ params, onApply, onClear, canClear }: OrdersFilt
       onSubmit={(event) => {
         void handleSubmit(onSubmit)(event)
       }}
-      className="flex flex-wrap items-start gap-4"
+      className="d-flex flex-wrap align-items-start gap-3"
     >
-      <fieldset className="grid gap-1.5">
-        <legend className="mb-1.5 text-sm font-medium">Status</legend>
-        <div className="flex flex-wrap gap-x-4 gap-y-2">
+      <fieldset className="d-grid gap-1">
+        <legend className="mb-1 small fw-medium">Status</legend>
+        <div className="d-flex flex-wrap column-gap-3 row-gap-2">
           {ORDER_STATUSES.map((status) => (
-            <label key={status} className="flex min-h-6 items-center gap-2 text-sm">
+            <label key={status} className="d-flex min-h-6 align-items-center gap-2 small">
               <input
                 type="checkbox"
                 value={status}
@@ -94,7 +95,7 @@ export function OrdersFilters({ params, onApply, onClear, canClear }: OrdersFilt
           render={(a11y) => <Input type="date" {...a11y} {...register('to')} />}
         />
       </div>
-      <div className="flex gap-2 self-end">
+      <div className="d-flex gap-2 align-self-end">
         <Button type="submit">Apply filters</Button>
         {canClear && (
           <Button type="button" variant="ghost" onClick={onClear}>

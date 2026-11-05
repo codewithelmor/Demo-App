@@ -1,6 +1,5 @@
 import { Minus, Plus } from 'lucide-react'
-import { useState } from 'react'
-import { FormField } from '@/components/form-field'
+import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -24,6 +23,7 @@ interface QuantityInputProps {
  * field loses focus or on Enter, so half-typed numbers like "10" on the way to "1001" are not saved.
  */
 export function QuantityInput({ label, value, max, onChange, disabled }: QuantityInputProps) {
+  const id = useId()
   // What is typed in the field (text, because the user may type something invalid).
   const [text, setText] = useState(String(value))
   // The last `value` we showed, to notice when the parent changes it.
@@ -59,30 +59,32 @@ export function QuantityInput({ label, value, max, onChange, disabled }: Quantit
     if (quantity !== undefined) save(quantity)
   }
 
+  const errorId = error ? `${id}-error` : undefined
+
   return (
-    <FormField
-      label={label}
-      error={error}
-      render={(a11y) => (
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label={`Decrease ${label.toLowerCase()}`}
-            disabled={disabled || current <= 1}
-            onClick={() => {
-              save(Math.max(1, current - 1))
-            }}
-          >
-            <Minus aria-hidden="true" size={16} />
-          </Button>
+    <div>
+      <div className="input-group">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label={`Decrease ${label.toLowerCase()}`}
+          disabled={disabled || current <= 1}
+          onClick={() => {
+            save(Math.max(1, current - 1))
+          }}
+        >
+          <Minus aria-hidden="true" size={16} />
+        </Button>
+        <div className="form-floating">
           <Input
-            {...a11y}
+            id={id}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={errorId}
             type="text"
             inputMode="numeric"
             autoComplete="off"
-            className="w-20 text-center"
+            className="text-center"
             value={text}
             disabled={disabled}
             onChange={(event) => {
@@ -96,20 +98,26 @@ export function QuantityInput({ label, value, max, onChange, disabled }: Quantit
               }
             }}
           />
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            aria-label={`Increase ${label.toLowerCase()}`}
-            disabled={disabled || current >= max}
-            onClick={() => {
-              save(Math.min(max, current + 1))
-            }}
-          >
-            <Plus aria-hidden="true" size={16} />
-          </Button>
+          <label htmlFor={id}>{label}</label>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label={`Increase ${label.toLowerCase()}`}
+          disabled={disabled || current >= max}
+          onClick={() => {
+            save(Math.min(max, current + 1))
+          }}
+        >
+          <Plus aria-hidden="true" size={16} />
+        </Button>
+      </div>
+      {error && (
+        <div id={errorId} className="invalid-feedback d-block fw-semibold">
+          {error}
         </div>
       )}
-    />
+    </div>
   )
 }

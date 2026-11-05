@@ -11,9 +11,9 @@ import { buttonVariants } from '@/components/ui/button'
  */
 export function ForbiddenPage() {
   return (
-    <section className="grid max-w-prose gap-4">
+    <section className="d-grid max-w-prose gap-3">
       <title>Not allowed · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         You do not have access to this page.
       </h1>
       <p>This area is for administrators.</p>

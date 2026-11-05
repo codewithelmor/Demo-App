@@ -219,11 +219,15 @@ describe('edit product', () => {
     // Someone else renames the product and bumps the ETag.
     latest = { ...product, name: 'Renamed elsewhere' }
     etag = '"8"'
+    await user.type(screen.getByLabelText('Name'), ' edited')
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
 
     expect(await screen.findByText('This product changed since you opened it.')).toBeVisible()
     expect(screen.getByLabelText('Name')).toHaveValue('Renamed elsewhere')
 
+    // Save stays off until the change is applied again on top of the latest version.
+    expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled()
+    await user.type(screen.getByLabelText('Name'), ' edited')
     await user.click(screen.getByRole('button', { name: 'Save changes' }))
     await waitFor(() => {
       expect(ifMatches).toEqual(['"7"', '"8"'])

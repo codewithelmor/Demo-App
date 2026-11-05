@@ -39,16 +39,16 @@ export function RouteError() {
   const message = error instanceof ApiError ? messageFor(error) : 'Something went wrong. Try again.'
 
   return (
-    <section className="grid max-w-prose gap-4">
+    <section className="d-grid max-w-prose gap-3">
       <title>Something went wrong · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Something went wrong
       </h1>
       <p role="alert">{message}</p>
       {reference && (
-        <p className="flex flex-wrap items-center gap-2 text-sm">
+        <p className="d-flex flex-wrap align-items-center gap-2 small">
           If it keeps happening, contact support with this reference:{' '}
-          <code className="rounded bg-muted px-1.5 py-0.5">{reference}</code>
+          <code className="bg-body-secondary rounded px-1">{reference}</code>
           <Button
             variant="outline"
             size="sm"
@@ -60,7 +60,7 @@ export function RouteError() {
           </Button>
         </p>
       )}
-      <div className="flex gap-2">
+      <div className="d-flex gap-2">
         <Button
           onClick={() => {
             void revalidator.revalidate()

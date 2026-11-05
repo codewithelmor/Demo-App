@@ -16,18 +16,12 @@ export function CartLink() {
       to="/cart"
       aria-label={`Cart, ${String(count)} ${count === 1 ? 'product' : 'products'}`}
       className={({ isActive }) =>
-        cn(
-          'inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
-          isActive && 'bg-muted',
-        )
+        cn('nav-link d-inline-flex align-items-center gap-2', isActive && 'active')
       }
     >
       <ShoppingCart aria-hidden="true" size={16} />
       <span aria-hidden="true">Cart</span>
-      <span
-        aria-hidden="true"
-        className="min-w-5 rounded-full bg-primary px-1.5 text-center text-xs text-primary-foreground"
-      >
+      <span aria-hidden="true" className="badge rounded-pill text-bg-light">
         {count}
       </span>
     </NavLink>

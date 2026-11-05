@@ -1,17 +1,14 @@
-// shadcn/ui component, copied into the project (you own and can change this code).
-// Styling uses Tailwind CSS classes; `cn()` merges them so a caller's `className` can override the defaults.
 import type { ComponentProps } from 'react'
 import { cn } from '@/lib/utils'
 
-/** A multi-line text box with the app's styling. Turns red when marked `aria-invalid`. */
-function Textarea({ className, ...props }: ComponentProps<'textarea'>) {
+/** A multi-line text box (Bootstrap `form-control`). Needs a placeholder for floating labels; see {@link Input}. */
+function Textarea({ className, placeholder = ' ', ...props }: ComponentProps<'textarea'>) {
   return (
     <textarea
       data-slot="textarea"
-      className={cn(
-        'min-h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50 aria-invalid:border-destructive',
-        className,
-      )}
+      placeholder={placeholder}
+      className={cn('form-control', props['aria-invalid'] && 'is-invalid', className)}
+      style={{ minHeight: '7rem' }}
       {...props}
     />
   )

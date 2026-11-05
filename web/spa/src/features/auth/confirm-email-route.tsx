@@ -53,7 +53,7 @@ export async function confirmEmailLoader({ request }: LoaderFunctionArgs): Promi
 export function ConfirmEmailRoute() {
   const outcome = useLoaderData<ConfirmOutcome>()
   return (
-    <section className="mx-auto grid max-w-md gap-4 rounded-lg border p-6">
+    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-3">
       <title>Confirm your email · Orders Shop</title>
       {outcome.kind === 'confirmed' && <Confirmed />}
       {outcome.kind === 'invalid' && <InvalidLink />}
@@ -66,7 +66,7 @@ export function ConfirmEmailRoute() {
 function Confirmed() {
   return (
     <>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Email confirmed
       </h1>
       <p role="status">Email confirmed. You can now sign in.</p>
@@ -83,7 +83,7 @@ function Confirmed() {
 function InvalidLink() {
   return (
     <>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         This link is invalid or expired
       </h1>
       <p role="status">Enter your email and we will send a new link.</p>
@@ -102,14 +102,14 @@ function Failed({ error }: { error: ApiError }) {
   const reference = referenceFor(error)
   return (
     <>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         We could not confirm your email
       </h1>
-      <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
+      <div role="alert" className="alert alert-danger mb-0 small">
         <p>{messageFor(error)}</p>
-        {reference && <p className="mt-1 text-muted-foreground">Reference: {reference}</p>}
+        {reference && <p className="mt-1 text-body-secondary">Reference: {reference}</p>}
       </div>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="d-flex flex-wrap align-items-center gap-2">
         <Button
           type="button"
           disabled={secondsLeft > 0 || revalidator.state === 'loading'}
@@ -121,7 +121,7 @@ function Failed({ error }: { error: ApiError }) {
           Try again
         </Button>
         {secondsLeft > 0 && (
-          <span aria-hidden="true" className="text-sm text-muted-foreground">
+          <span aria-hidden="true" className="small text-body-secondary">
             You can try again in {secondsLeft} s
           </span>
         )}

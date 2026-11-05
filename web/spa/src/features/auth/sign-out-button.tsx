@@ -19,8 +19,9 @@ export function SignOutButton() {
 
   return (
     <Button
-      variant="outline"
+      variant="secondary"
       size="sm"
+      className="align-self-start"
       disabled={mutation.isPending}
       aria-busy={mutation.isPending}
       onClick={() => {

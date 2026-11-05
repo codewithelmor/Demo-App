@@ -5,7 +5,6 @@ import { z } from '@/lib/zod'
 import { FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { PRICE_PATTERN, type CatalogParams } from '@/features/catalog/catalog-params'
 
 /** A price typed in the box: empty (no limit) or a valid price like `12` or `12.50`. */
@@ -53,6 +52,7 @@ export function CatalogFilters({ params, onApply, onClear, canClear }: CatalogFi
     handleSubmit,
     formState: { errors },
   } = useForm<FiltersValues>({
+    mode: 'onChange',
     resolver: zodResolver(filtersSchema),
     defaultValues: {
       minPrice: params.minPrice === undefined ? '' : String(params.minPrice),
@@ -76,7 +76,7 @@ export function CatalogFilters({ params, onApply, onClear, canClear }: CatalogFi
       onSubmit={(event) => {
         void handleSubmit(onSubmit)(event)
       }}
-      className="flex flex-wrap items-start gap-4"
+      className="d-flex flex-wrap align-items-start gap-3"
     >
       <div className="w-32">
         <FormField
@@ -96,16 +96,18 @@ export function CatalogFilters({ params, onApply, onClear, canClear }: CatalogFi
           )}
         />
       </div>
-      <div className="flex min-h-10 items-center gap-2 self-end">
+      <div className="form-check min-h-10 d-flex align-items-center gap-2 align-self-end mb-0 ps-0">
         <input
           id={checkboxId}
           type="checkbox"
-          className="size-5 accent-primary"
+          className="form-check-input mt-0 ms-0"
           {...register('inStock')}
         />
-        <Label htmlFor={checkboxId}>In stock only</Label>
+        <label htmlFor={checkboxId} className="form-check-label">
+          In stock only
+        </label>
       </div>
-      <div className="flex gap-2 self-end">
+      <div className="d-flex gap-2 align-self-end">
         <Button type="submit">Apply filters</Button>
         {canClear && (
           <Button type="button" variant="ghost" onClick={onClear}>

@@ -17,14 +17,14 @@ export function FormAlert({ failure }: FormAlertProps) {
   if (!failure) return null
   const reference = referenceFor(failure.error)
   return (
-    <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
-      <p>{messageFor(failure.error)}</p>
+    <div role="alert" className="alert alert-danger small mb-0">
+      <p className="mb-0">{messageFor(failure.error)}</p>
       {failure.unmapped.map((message) => (
-        <p key={message} className="mt-1">
+        <p key={message} className="mt-1 mb-0">
           {message}
         </p>
       ))}
-      {reference && <p className="mt-1 text-muted-foreground">Reference: {reference}</p>}
+      {reference && <p className="mt-1 mb-0 opacity-75">Reference: {reference}</p>}
     </div>
   )
 }

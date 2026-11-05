@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm, useWatch, type FieldErrors, type Path } from 'react-hook-form'
@@ -72,7 +73,7 @@ export function RegisterRoute() {
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
     // Check a field when the user leaves it, then on every keystroke once it was touched.
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { firstName: '', lastName: '', email: '', password: '', phone: '' },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, fieldNames)
@@ -88,7 +89,9 @@ export function RegisterRoute() {
     },
   })
 
-  const onSubmit = (values: RegisterValues) => {
+  const onSubmit = async (values: RegisterValues) => {
+    if (!(await confirmSubmit({ title: 'Create your account?', confirmLabel: 'Create account' })))
+      return
     clear()
     setSummary([])
     mutation.mutate(values)
@@ -99,28 +102,26 @@ export function RegisterRoute() {
     : `At least ${String(PASSWORD_MIN)} characters. A short sentence works well. Spaces are allowed.`
 
   return (
-    <section className="mx-auto grid max-w-md gap-6 rounded-lg border p-6">
+    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
       <title>Create your account · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Create your account
       </h1>
-      <p className="text-sm text-muted-foreground">
-        All fields are required unless marked optional.
-      </p>
+      <p className="small text-body-secondary">All fields are required unless marked optional.</p>
 
       <FormAlert failure={failure} />
 
       {summary.length > 0 && (
-        <div role="alert" className="rounded-md border border-destructive p-3 text-sm">
-          <p className="font-medium">
+        <div role="alert" className="alert alert-danger mb-0 small">
+          <p className="fw-medium">
             Fix {summary.length} {summary.length === 1 ? 'problem' : 'problems'} to continue
           </p>
-          <ul className="mt-1 list-disc pl-5">
+          <ul className="mt-1 ps-4">
             {summary.map((item) => (
               <li key={item.name}>
                 <button
                   type="button"
-                  className="inline-block min-h-6 text-left underline underline-offset-4"
+                  className="d-inline-block min-h-6 text-start text-decoration-underline"
                   onClick={() => {
                     setFocus(item.name)
                   }}
@@ -140,7 +141,7 @@ export function RegisterRoute() {
             setSummary(summaryOf(invalid))
           })(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
         <FormField
           label="First name"
@@ -187,7 +188,7 @@ export function RegisterRoute() {
         />
       </form>
 
-      <p className="text-sm">
+      <p className="small">
         Already have an account? <TextLink to="/sign-in">Sign in</TextLink>
       </p>
     </section>

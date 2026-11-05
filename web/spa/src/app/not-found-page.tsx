@@ -8,9 +8,9 @@ import { buttonVariants } from '@/components/ui/button'
  */
 export function NotFoundPage() {
   return (
-    <section className="grid max-w-prose gap-4">
+    <section className="d-grid max-w-prose gap-3">
       <title>Page not found · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Page not found
       </h1>
       <p>Check the address, or go back to the start.</p>

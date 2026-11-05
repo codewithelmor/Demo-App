@@ -13,19 +13,16 @@ const links = [
 export function AccountNav() {
   const { pathname } = useLocation()
   return (
-    <nav aria-label="Account" className="md:w-48">
-      <ul className="flex flex-wrap gap-1 md:grid">
+    <nav aria-label="Account" className="w-100">
+      <ul className="nav nav-pills flex-md-column">
         {links.map((link) => {
           const current = link.paths.includes(pathname)
           return (
-            <li key={link.to}>
+            <li key={link.to} className="nav-item">
               <Link
                 to={link.to}
                 aria-current={current ? 'page' : undefined}
-                className={cn(
-                  'block rounded-md px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
-                  current && 'bg-muted',
-                )}
+                className={cn('nav-link', current && 'active')}
               >
                 {link.label}
               </Link>
@@ -40,9 +37,9 @@ export function AccountNav() {
 /** The page frame: the account links next to the page. */
 export function AccountLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="grid gap-6 md:grid-cols-[12rem_1fr]">
+    <div className="sidebar-layout">
       <AccountNav />
-      <div className="grid max-w-xl content-start gap-4">{children}</div>
+      <div className="d-grid max-w-xl align-content-start gap-3">{children}</div>
     </div>
   )
 }

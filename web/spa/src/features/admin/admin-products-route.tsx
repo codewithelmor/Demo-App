@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
+import { FormField } from '@/components/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
 import {
   adminProductsQuery,
@@ -71,7 +71,7 @@ function DeleteProductButton({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size="sm" aria-label={`Delete ${product.name}`}>
+        <Button variant="destructive" size="sm" aria-label={`Delete ${product.name}`}>
           Delete
         </Button>
       </AlertDialogTrigger>
@@ -81,7 +81,7 @@ function DeleteProductButton({
           Customers will no longer see it. Existing orders keep their lines, and you can restore the
           product later.
         </AlertDialogDescription>
-        <div className="flex flex-wrap justify-end gap-2">
+        <div className="d-flex flex-wrap justify-content-end gap-2">
           <AlertDialogCancel asChild>
             <Button type="button" variant="outline" disabled={mutation.isPending}>
               Keep product
@@ -173,10 +173,10 @@ export function AdminProductsRoute() {
   }
 
   return (
-    <section className="grid gap-4">
+    <section className="d-grid gap-3">
       <title>Products · Back office · Orders Shop</title>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+        <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
           Products
         </h1>
         <Link to="/admin/products/new" className={buttonVariants()}>
@@ -184,8 +184,8 @@ export function AdminProductsRoute() {
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-end gap-4">
-        <div className="min-w-56 flex-1">
+      <div className="d-flex flex-wrap align-items-end gap-3">
+        <div className="min-w-56 flex-fill">
           <SearchBox
             value={params.search ?? ''}
             onSearch={(search) => {
@@ -193,26 +193,30 @@ export function AdminProductsRoute() {
             }}
           />
         </div>
-        <div className="grid w-48 gap-1.5">
-          <Label htmlFor="admin-sort">Sort</Label>
-          <NativeSelect
-            id="admin-sort"
-            value={params.sort}
-            onChange={(event) => {
-              const sort = event.target.value
-              if (isSort(sort)) update((current) => ({ ...current, sort, page: 1 }))
-            }}
-          >
-            {ADMIN_SORTS.map((sort) => (
-              <option key={sort} value={sort}>
-                {ADMIN_SORT_LABELS[sort]}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
-        <label className="flex items-center gap-2 pb-2 text-sm">
+        <FormField
+          className="w-48"
+          label="Sort"
+          render={(a11y) => (
+            <NativeSelect
+              {...a11y}
+              value={params.sort}
+              onChange={(event) => {
+                const sort = event.target.value
+                if (isSort(sort)) update((current) => ({ ...current, sort, page: 1 }))
+              }}
+            >
+              {ADMIN_SORTS.map((sort) => (
+                <option key={sort} value={sort}>
+                  {ADMIN_SORT_LABELS[sort]}
+                </option>
+              ))}
+            </NativeSelect>
+          )}
+        />
+        <label className="d-flex align-items-center gap-2 pb-2 small">
           <input
             type="checkbox"
+            className="form-check-input mt-0"
             checked={params.includeDeleted}
             onChange={(event) => {
               const includeDeleted = event.target.checked
@@ -224,7 +228,7 @@ export function AdminProductsRoute() {
       </div>
 
       {/* Always in the page, so counts and results of delete and restore are announced. */}
-      <p role="status" className="min-h-5 text-sm text-muted-foreground">
+      <p role="status" className="min-h-5 small text-body-secondary">
         {status !== ''
           ? status
           : data
@@ -232,17 +236,14 @@ export function AdminProductsRoute() {
             : ''}
       </p>
       {actionError !== undefined && (
-        <p role="alert" className="rounded-md border border-destructive p-3 text-sm">
+        <p role="alert" className="alert alert-danger mb-0 small">
           {apiErrorMessage(actionError)}
         </p>
       )}
 
       {isPending && <p role="status">Loading products…</p>}
       {isError && (
-        <div
-          role="alert"
-          className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-        >
+        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -261,21 +262,21 @@ export function AdminProductsRoute() {
       )}
 
       {data && data.items.length > 0 && (
-        <div className="overflow-x-auto">
-          <table aria-busy={isFetching} className="w-full text-left text-sm">
-            <caption className="sr-only">Products</caption>
+        <div className="table-responsive">
+          <table aria-busy={isFetching} className="table table-hover align-middle small">
+            <caption className="visually-hidden">Products</caption>
             <thead>
-              <tr className="border-b">
+              <tr>
                 <th scope="col" className="p-2">
                   Name
                 </th>
                 <th scope="col" className="p-2">
                   SKU
                 </th>
-                <th scope="col" className="p-2 text-right">
+                <th scope="col" className="p-2 text-end">
                   Price
                 </th>
-                <th scope="col" className="p-2 text-right">
+                <th scope="col" className="p-2 text-end">
                   Stock
                 </th>
                 <th scope="col" className="p-2">
@@ -288,13 +289,13 @@ export function AdminProductsRoute() {
             </thead>
             <tbody>
               {data.items.map((product) => (
-                <tr key={product.id} className="border-b">
-                  <th scope="row" className="p-2 font-medium">
+                <tr key={product.id}>
+                  <th scope="row" className="p-2 fw-medium">
                     {product.name}
                   </th>
                   <td className="p-2">{product.sku}</td>
-                  <td className="p-2 text-right">{formatMoney(product.price)}</td>
-                  <td className="p-2 text-right">{product.stockQuantity}</td>
+                  <td className="p-2 text-end">{formatMoney(product.price)}</td>
+                  <td className="p-2 text-end">{product.stockQuantity}</td>
                   <td className="p-2">
                     {product.isDeleted === true ? (
                       <Badge variant="muted">Deleted</Badge>
@@ -303,7 +304,7 @@ export function AdminProductsRoute() {
                     )}
                   </td>
                   <td className="p-2">
-                    <div className="flex gap-2">
+                    <div className="d-flex gap-2">
                       {product.isDeleted === true ? (
                         <RestoreProductButton
                           product={product}
@@ -317,7 +318,7 @@ export function AdminProductsRoute() {
                           <Link
                             to={`/admin/products/${product.id}`}
                             aria-label={`Edit ${product.name}`}
-                            className={buttonVariants({ variant: 'outline', size: 'sm' })}
+                            className={buttonVariants({ variant: 'warning', size: 'sm' })}
                           >
                             Edit
                           </Link>
@@ -340,13 +341,13 @@ export function AdminProductsRoute() {
       )}
 
       {data && data.totalCount > 0 && (
-        <nav aria-label="Pagination" className="flex items-center gap-3">
+        <nav aria-label="Pagination" className="d-flex align-items-center gap-2">
           {params.page > 1 ? (
             <Link to={pageLink(params.page - 1)} className={buttonVariants({ variant: 'outline' })}>
               Previous
             </Link>
           ) : null}
-          <span className="text-sm">
+          <span className="small">
             Page {params.page} of {totalPages}
           </span>
           {params.page < totalPages ? (

@@ -21,29 +21,25 @@ export function ProductCard({ product, inCart, listSearch, onAdd }: ProductCardP
   const inStock = product.stockQuantity > 0
   const label = inCart > 0 ? 'Add one more' : 'Add to cart'
   return (
-    <li className="grid content-start gap-2 rounded-lg border p-4">
-      <h2 className="text-lg font-medium">
-        <Link
-          to={`/products/${product.id}`}
-          state={{ list: listSearch }}
-          className="underline-offset-4 hover:underline"
-        >
+    <li className="card card-body shadow-sm d-grid align-content-start gap-2 p-3">
+      <h2 className="fs-5 fw-medium">
+        <Link to={`/products/${product.id}`} state={{ list: listSearch }}>
           {product.name}
         </Link>
       </h2>
-      <p className="text-sm text-muted-foreground">SKU {product.sku}</p>
-      <p className="font-semibold">{formatMoney(product.price)}</p>
+      <p className="small text-body-secondary">SKU {product.sku}</p>
+      <p className="fw-semibold">{formatMoney(product.price)}</p>
       <div>
         <Badge variant={inStock ? 'default' : 'muted'}>
           {inStock ? 'In stock' : 'Out of stock'}
         </Badge>
       </div>
-      {inCart > 0 && <p className="text-sm">{inCart} in cart</p>}
+      {inCart > 0 && <p className="small">{inCart} in cart</p>}
       <div>
         {inStock ? (
           <Button
             type="button"
-            variant="outline"
+            variant="success"
             aria-label={`${label}: ${product.name}`}
             onClick={() => {
               onAdd(product)

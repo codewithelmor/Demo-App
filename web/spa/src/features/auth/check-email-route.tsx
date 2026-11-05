@@ -9,16 +9,16 @@ import { buttonVariants } from '@/components/ui/button'
  */
 export function CheckEmailRoute() {
   return (
-    <section className="mx-auto grid max-w-md gap-4 rounded-lg border p-6">
+    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-3">
       <title>Check your email · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Check your email
       </h1>
       <p>
         If this email can be used, we sent a link to confirm your account. The link works for 24
         hours.
       </p>
-      <p className="text-sm">
+      <p className="small">
         Did not get it? <TextLink to="/resend-confirmation">Resend email</TextLink>
       </p>
       <div>
@@ -27,7 +27,7 @@ export function CheckEmailRoute() {
         </Link>
       </div>
       {import.meta.env.DEV && (
-        <p className="text-sm text-muted-foreground">
+        <p className="small text-body-secondary">
           Local setup: find the link with <code>docker compose logs api</code>.
         </p>
       )}

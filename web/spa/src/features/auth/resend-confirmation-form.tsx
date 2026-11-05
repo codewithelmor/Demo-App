@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -40,7 +41,7 @@ export function ResendConfirmationForm({
     formState: { errors },
   } = useForm<EmailValues>({
     resolver: zodResolver(emailSchema),
-    mode: 'onTouched',
+    mode: 'onChange',
     defaultValues: { email: defaultEmail },
   })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, ['email'])
@@ -53,7 +54,8 @@ export function ResendConfirmationForm({
     onError: fail,
   })
 
-  const onSubmit = (values: EmailValues) => {
+  const onSubmit = async (values: EmailValues) => {
+    if (!(await confirmSubmit({ title: 'Send the email?', confirmLabel: 'Send email' }))) return
     clear()
     setSent(false)
     mutation.mutate(values.email)
@@ -65,7 +67,7 @@ export function ResendConfirmationForm({
       onSubmit={(event) => {
         void handleSubmit(onSubmit)(event)
       }}
-      className="grid gap-4"
+      className="d-grid gap-3"
     >
       <FormAlert failure={failure} />
       <FormField
@@ -82,7 +84,7 @@ export function ResendConfirmationForm({
         secondsLeft={locked ? secondsLeft : 0}
       />
       {/* Always in the page, so the result is announced when its text appears. */}
-      <p role="status" className="text-sm">
+      <p role="status" className="small">
         {sent ? RESEND_RESULT : ''}
       </p>
     </form>

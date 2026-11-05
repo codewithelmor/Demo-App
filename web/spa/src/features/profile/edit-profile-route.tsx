@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { confirmSubmit } from '@/lib/confirm'
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -58,15 +59,12 @@ export function EditProfileRoute() {
   return (
     <AccountLayout>
       <title>Edit profile · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Edit profile
       </h1>
       {isPending && <p role="status">Loading your profile…</p>}
       {isError && (
-        <div
-          role="alert"
-          className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-        >
+        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
           <p>{apiErrorMessage(error)}</p>
           {!(error instanceof ApiError && error.status === 404) && (
             <Button
@@ -104,7 +102,11 @@ function EditForm({ data }: { data: ProfileData }) {
     setValue,
     control,
     formState: { errors },
-  } = useForm<ProfileValues>({ resolver: zodResolver(profileSchema), defaultValues: latest })
+  } = useForm<ProfileValues>({
+    mode: 'onChange',
+    resolver: zodResolver(profileSchema),
+    defaultValues: latest,
+  })
   const { failure, secondsLeft, locked, fail, clear } = useServerFailure(setError, fieldNames)
   const typed = useWatch({ control })
 
@@ -112,6 +114,10 @@ function EditForm({ data }: { data: ProfileData }) {
   // Only the fields the user changed from what they opened are kept (baseline = the values when the form opened).
   const [mine, setMine] = useState<Partial<ProfileValues> | undefined>()
   const [baseline, setBaseline] = useState(latest)
+  // Save is only available when a field differs from the values the form opened with (or reloaded after a conflict).
+  const hasChanges = fieldNames.some(
+    (field) => (typed[field] ?? baseline[field]) !== baseline[field],
+  )
   const [conflicts, setConflicts] = useState(0)
   const conflictRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
@@ -156,7 +162,11 @@ function EditForm({ data }: { data: ProfileData }) {
     },
   })
 
-  const onSubmit = (values: ProfileValues) => {
+  const onSubmit = async (values: ProfileValues) => {
+    if (
+      !(await confirmSubmit({ title: 'Save your profile changes?', confirmLabel: 'Save changes' }))
+    )
+      return
     clear()
     setMine(undefined)
     mutation.mutate({ etag: data.etag, values })
@@ -173,7 +183,7 @@ function EditForm({ data }: { data: ProfileData }) {
     )
       return null
     return (
-      <div className="flex flex-wrap items-center gap-2 text-sm">
+      <div className="d-flex flex-wrap align-items-center gap-2 small">
         <span>Your change: {wanted === '' ? '(empty)' : wanted}</span>
         <Button
           type="button"
@@ -198,9 +208,9 @@ function EditForm({ data }: { data: ProfileData }) {
           ref={conflictRef}
           role="alert"
           tabIndex={-1}
-          className="rounded-md border border-amber-600 p-3 text-sm outline-none"
+          className="alert alert-warning mb-0 small focus-target"
         >
-          <p className="font-medium">This record changed since you opened it.</p>
+          <p className="fw-medium">This record changed since you opened it.</p>
           <p>
             The form now shows the latest saved values. Your changes are shown under each field.
           </p>
@@ -212,14 +222,14 @@ function EditForm({ data }: { data: ProfileData }) {
         onSubmit={(event) => {
           void handleSubmit(onSubmit)(event)
         }}
-        className="grid gap-4"
+        className="d-grid gap-3"
       >
-        <div className="grid gap-1.5">
-          <span className="text-sm font-medium">Email</span>
+        <div className="d-grid gap-1">
+          <span className="small fw-medium">Email</span>
           <p>{data.profile.email}</p>
-          <p className="text-sm text-muted-foreground">To change your email, contact support.</p>
+          <p className="small text-body-secondary">To change your email, contact support.</p>
         </div>
-        <div className="grid gap-1">
+        <div className="d-grid gap-1">
           <FormField
             label="First name"
             error={errors.firstName?.message}
@@ -229,7 +239,7 @@ function EditForm({ data }: { data: ProfileData }) {
           />
           {suggestion('firstName')}
         </div>
-        <div className="grid gap-1">
+        <div className="d-grid gap-1">
           <FormField
             label="Last name"
             error={errors.lastName?.message}
@@ -239,7 +249,7 @@ function EditForm({ data }: { data: ProfileData }) {
           />
           {suggestion('lastName')}
         </div>
-        <div className="grid gap-1">
+        <div className="d-grid gap-1">
           <FormField
             label="Phone (optional)"
             hint="Use + and the country code, for example +14155550123. Clear the box to remove your phone number."
@@ -250,12 +260,13 @@ function EditForm({ data }: { data: ProfileData }) {
           />
           {suggestion('phone')}
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="d-flex flex-wrap align-items-center gap-2">
           <SubmitRow
             label="Save changes"
             pendingLabel="Saving…"
             pending={mutation.isPending}
             secondsLeft={locked ? secondsLeft : 0}
+            disabled={!hasChanges}
           />
           <Link to="/account" className={buttonVariants({ variant: 'outline' })}>
             Cancel

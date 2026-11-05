@@ -17,6 +17,8 @@ import { RouterProvider } from 'react-router/dom'
 import { createQueryClient } from '@/app/query-client'
 import { CartProvider } from '@/hooks/cart-provider'
 import { createAppRouter } from '@/app/router'
+import 'bootswatch/dist/lumen/bootstrap.min.css'
+import 'sweetalert2/dist/sweetalert2.min.css'
 import '@/styles/globals.css'
 
 const container = document.getElementById('root')

@@ -1,5 +1,6 @@
 /** The frame around every page: skip link, header with navigation, and the main content area. */
-import { NavLink, Outlet, useNavigation } from 'react-router'
+import { useState } from 'react'
+import { NavLink, Outlet, useLocation, useNavigation } from 'react-router'
 import { CartLink } from '@/components/cart-link'
 import { useSession } from '@/lib/session'
 import { SignOutButton } from '@/features/auth/sign-out-button'
@@ -7,11 +8,7 @@ import { useFocusHeadingOnNavigate } from '@/hooks/use-focus-heading-on-navigate
 import { cn } from '@/lib/utils'
 
 /** CSS classes for a navigation link. React Router tells us whether the link points at the current page. */
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  cn(
-    'rounded-md px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring',
-    isActive && 'bg-muted',
-  )
+const navLinkClass = ({ isActive }: { isActive: boolean }) => cn('nav-link', isActive && 'active')
 
 /**
  * The app shell, rendered around every page (the page itself appears where `<Outlet />` is).
@@ -25,58 +22,74 @@ export function RootLayout() {
   useFocusHeadingOnNavigate()
   const navigation = useNavigation()
   const user = useSession()
+  // Whether the menu is open on small screens (it is always visible from the lg breakpoint up).
+  const { pathname } = useLocation()
+  const [openOn, setOpenOn] = useState<string | undefined>(undefined)
+  const open = openOn === pathname
 
   return (
-    <div className="min-h-dvh">
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:rounded-md focus:bg-background focus:p-2"
-      >
+    <div className="min-vh-100">
+      <a href="#main" className="skip-link btn btn-light position-absolute top-0 start-0 m-2">
         Skip to main content
       </a>
-      <header className="border-b">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 p-4">
-          <span className="font-semibold">Orders Shop</span>
-          {user && (
-            <>
-              <nav aria-label="Main">
-                <ul className="flex gap-1">
-                  <li>
-                    <NavLink to="/products" className={navLinkClass}>
-                      Products
-                    </NavLink>
-                  </li>
-                  {user.roles.includes('Customer') && (
-                    <li>
-                      <NavLink to="/orders" className={navLinkClass}>
-                        My orders
+      <header>
+        <nav aria-label="Main" className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+          <div className="container-fluid">
+            <span className="navbar-brand fw-semibold">Orders Shop</span>
+            {user && (
+              <>
+                <button
+                  type="button"
+                  className="navbar-toggler"
+                  aria-controls="navbar-menu"
+                  aria-expanded={open}
+                  aria-label="Toggle navigation"
+                  onClick={() => {
+                    setOpenOn(open ? undefined : pathname)
+                  }}
+                >
+                  <span className="navbar-toggler-icon" />
+                </button>
+                {/* Bootstrap's collapse JavaScript is not loaded; React toggles the show class. The menu closes by itself when the page changes. */}
+                <div id="navbar-menu" className={cn('collapse navbar-collapse', open && 'show')}>
+                  <ul className="navbar-nav me-auto">
+                    <li className="nav-item">
+                      <NavLink to="/products" className={navLinkClass}>
+                        Products
                       </NavLink>
                     </li>
-                  )}
-                  {user.roles.includes('Admin') && (
-                    <li>
-                      <NavLink to="/admin" className={navLinkClass}>
-                        Back office
+                    {user.roles.includes('Customer') && (
+                      <li className="nav-item">
+                        <NavLink to="/orders" className={navLinkClass}>
+                          My orders
+                        </NavLink>
+                      </li>
+                    )}
+                    {user.roles.includes('Admin') && (
+                      <li className="nav-item">
+                        <NavLink to="/admin" className={navLinkClass}>
+                          Back office
+                        </NavLink>
+                      </li>
+                    )}
+                  </ul>
+                  <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
+                    <CartLink />
+                    {user.roles.includes('Customer') && (
+                      <NavLink to="/account" className={navLinkClass}>
+                        My account
                       </NavLink>
-                    </li>
-                  )}
-                </ul>
-              </nav>
-              <div className="flex items-center gap-3">
-                <CartLink />
-                {user.roles.includes('Customer') && (
-                  <NavLink to="/account" className={navLinkClass}>
-                    My account
-                  </NavLink>
-                )}
-                <span className="text-sm text-muted-foreground">{user.email}</span>
-                <SignOutButton />
-              </div>
-            </>
-          )}
-        </div>
+                    )}
+                    <span className="navbar-text">{user.email}</span>
+                    <SignOutButton />
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </nav>
       </header>
-      <main id="main" className="mx-auto max-w-5xl p-4" aria-busy={navigation.state === 'loading'}>
+      <main id="main" className="container py-4" aria-busy={navigation.state === 'loading'}>
         <Outlet />
       </main>
     </div>

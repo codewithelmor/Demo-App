@@ -35,9 +35,9 @@ export function OrderDetailRoute() {
 
   if (isPending) {
     return (
-      <section className="grid gap-4">
+      <section className="d-grid gap-3">
         <title>Order · Orders Shop</title>
-        <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+        <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
           Order
         </h1>
         <p role="status">Loading order…</p>
@@ -49,19 +49,19 @@ export function OrderDetailRoute() {
     // Another customer's order is a 404 too, so it looks the same as one that does not exist.
     const notFound = error instanceof ApiError && error.status === 404
     return (
-      <section className="grid max-w-prose justify-items-start gap-4">
+      <section className="d-grid max-w-prose justify-items-start gap-3">
         <title>{notFound ? 'Order not found' : 'Order'} · Orders Shop</title>
-        <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+        <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
           {notFound ? 'Order not found' : 'We could not load this order'}
         </h1>
         {notFound ? (
           <p>Order not found.</p>
         ) : (
-          <div role="alert" className="rounded-md border border-destructive p-3">
+          <div role="alert" className="alert alert-danger mb-0">
             <p>{apiErrorMessage(error)}</p>
           </div>
         )}
-        <div className="flex gap-2">
+        <div className="d-flex gap-2">
           {!notFound && (
             <Button
               variant="outline"
@@ -96,7 +96,7 @@ function statusText(status: OrderStatus): string {
 function productCell(query: UseQueryResult<Product> | undefined, productId: string) {
   if (!query || query.isPending) {
     return (
-      <span aria-busy="true" className="text-muted-foreground">
+      <span aria-busy="true" className="text-body-secondary">
         Loading name…
       </span>
     )
@@ -105,11 +105,11 @@ function productCell(query: UseQueryResult<Product> | undefined, productId: stri
     return query.error instanceof ApiError && query.error.status === 404 ? (
       <span>Product no longer available</span>
     ) : (
-      <span className="text-muted-foreground">Name not available</span>
+      <span className="text-body-secondary">Name not available</span>
     )
   }
   return (
-    <Link to={`/products/${productId}`} className="underline underline-offset-4">
+    <Link to={`/products/${productId}`} className="text-decoration-underline">
       {query.data.name}
     </Link>
   )
@@ -152,82 +152,78 @@ function OrderDetail({ order, placed }: { order: MyOrder; placed: boolean }) {
   const updatedAt = formatDateTime(order.lastModifiedAt)
 
   return (
-    <section className="grid gap-4">
+    <section className="d-grid gap-3">
       <title>{`Order #${shortId(order.id)} · Orders Shop`}</title>
-      <Link to="/orders" className="text-sm underline underline-offset-4">
+      <Link to="/orders" className="small text-decoration-underline">
         My orders
       </Link>
-      <div className="flex flex-wrap items-center gap-3">
-        <h1
-          ref={headingRef}
-          tabIndex={-1}
-          className="font-mono text-2xl font-semibold outline-none"
-        >
+      <div className="d-flex flex-wrap align-items-center gap-2">
+        <h1 ref={headingRef} tabIndex={-1} className="font-monospace fs-3 fw-semibold focus-target">
           Order #{shortId(order.id)}
         </h1>
         <StatusBadge status={order.status} />
       </div>
-      <p className="text-sm text-muted-foreground">
+      <p className="small text-body-secondary">
         Placed {placedAt}
         {updatedAt && updatedAt !== placedAt ? `. Last updated ${updatedAt}` : ''}
       </p>
 
       {/* Always in the page, so status changes are announced. */}
-      <p role="status" className="min-h-5 text-sm">
+      <p role="status" className="min-h-5 small">
         {announcement}
       </p>
       {/* A region that is always in the page, so the text is announced; empty (and hidden) unless the order was just placed. */}
-      <p role="status" className={placed ? 'rounded-md bg-muted p-3 text-sm' : 'sr-only'}>
+      <p role="status" className={placed ? 'alert alert-success mb-0 small' : 'visually-hidden'}>
         {placed ? 'Order placed. We will confirm it soon.' : ''}
       </p>
       {conflict && (
-        <p role="alert" className="rounded-md border border-destructive p-3 text-sm">
+        <p role="alert" className="alert alert-danger mb-0 small">
           {conflict}
         </p>
       )}
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <caption className="sr-only">Items in this order</caption>
+      <div className="table-responsive">
+        <table className="table table-hover align-middle small">
+          <caption className="visually-hidden">Items in this order</caption>
           <thead>
-            <tr className="border-b">
-              <th scope="col" className="py-2 pr-4 font-medium">
+            <tr>
+              <th scope="col" className="py-2 pe-3 fw-medium">
                 Product
               </th>
-              <th scope="col" className="py-2 pr-4 text-right font-medium">
+              <th scope="col" className="py-2 pe-3 text-end fw-medium">
                 Unit price
               </th>
-              <th scope="col" className="py-2 pr-4 text-right font-medium">
+              <th scope="col" className="py-2 pe-3 text-end fw-medium">
                 Qty
               </th>
-              <th scope="col" className="py-2 text-right font-medium">
+              <th scope="col" className="py-2 text-end fw-medium">
                 Line total
               </th>
             </tr>
           </thead>
           <tbody>
             {order.items.map((item) => (
-              <tr key={item.productId} className="border-b">
-                <th scope="row" className="py-3 pr-4 font-normal">
+              <tr key={item.productId}>
+                <th scope="row" className="py-3 pe-3 fw-normal">
                   {productCell(nameFor(item.productId), item.productId)}
                 </th>
-                <td className="py-3 pr-4 text-right">
+                <td className="py-3 pe-3 text-end">
                   {formatMoneyIn(item.unitPrice, order.currency)}
                 </td>
-                <td className="py-3 pr-4 text-right">{item.quantity}</td>
-                <td className="py-3 text-right">{formatMoneyIn(item.lineTotal, order.currency)}</td>
+                <td className="py-3 pe-3 text-end">{item.quantity}</td>
+                <td className="py-3 text-end">{formatMoneyIn(item.lineTotal, order.currency)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="text-lg font-semibold">
+      <p className="fs-5 fw-semibold">
         Total {formatMoneyIn(order.total, order.currency)} ({order.currency})
       </p>
 
-      <div className="grid gap-2">
-        <h2 className="text-lg font-medium">Status history</h2>
-        <ol aria-label="Status history" className="grid gap-1 text-sm">
+      <div className="d-grid gap-2">
+        <h2 className="fs-5 fw-medium">Status history</h2>
+        <ol aria-label="Status history" className="d-grid gap-1 small">
           {history.map((entry) => (
             <li key={`${String(entry.at)}-${entry.to}`}>
               {entry.from ? `${entry.from} to ${entry.to}` : `Placed as ${entry.to}`}
@@ -244,7 +240,7 @@ function OrderDetail({ order, placed }: { order: MyOrder; placed: boolean }) {
           <CancelOrderDialog orderId={order.id} onConflict={setConflict} />
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">Only pending orders can be cancelled.</p>
+        <p className="small text-body-secondary">Only pending orders can be cancelled.</p>
       )}
     </section>
   )

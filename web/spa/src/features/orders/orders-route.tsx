@@ -1,7 +1,7 @@
 import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { Link, useSearchParams, type LoaderFunctionArgs } from 'react-router'
 import { Button, buttonVariants } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
+import { FormField } from '@/components/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
 import { apiErrorMessage } from '@/lib/error-message'
 import { myOrdersQuery } from '@/features/orders/orders-api'
@@ -65,14 +65,14 @@ export function OrdersRoute() {
   }
 
   return (
-    <section className="grid gap-4">
+    <section className="d-grid gap-3">
       <title>My orders · Orders Shop</title>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
+        <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
           My orders
         </h1>
         {/* Always in the page: a new count is announced when filters, sort or paging change the list. */}
-        <p role="status" className="min-h-5 text-sm text-muted-foreground">
+        <p role="status" className="min-h-5 small text-body-secondary">
           {data && data.totalCount > 0
             ? `${String(data.totalCount)} ${data.totalCount === 1 ? 'order' : 'orders'}`
             : ''}
@@ -89,42 +89,44 @@ export function OrdersRoute() {
         onClear={clearFilters}
       />
 
-      <div className="grid w-52 gap-1.5">
-        <Label htmlFor="orders-sort">Sort</Label>
-        <NativeSelect
-          id="orders-sort"
-          value={params.sort}
-          onChange={(event) => {
-            const sort = event.target.value
-            if (isSort(sort)) update((current) => ({ ...current, sort, page: 1 }))
-          }}
-        >
-          {ORDER_SORTS.map((sort) => (
-            <option key={sort} value={sort}>
-              {ORDER_SORT_LABELS[sort]}
-            </option>
-          ))}
-        </NativeSelect>
-      </div>
+      <FormField
+        className="w-52"
+        label="Sort"
+        render={(a11y) => (
+          <NativeSelect
+            {...a11y}
+            value={params.sort}
+            onChange={(event) => {
+              const sort = event.target.value
+              if (isSort(sort)) update((current) => ({ ...current, sort, page: 1 }))
+            }}
+          >
+            {ORDER_SORTS.map((sort) => (
+              <option key={sort} value={sort}>
+                {ORDER_SORT_LABELS[sort]}
+              </option>
+            ))}
+          </NativeSelect>
+        )}
+      />
 
       {isPending && (
         <>
-          <p role="status" className="sr-only">
+          <p role="status" className="visually-hidden">
             Loading orders…
           </p>
-          <div aria-hidden="true" className="grid gap-2">
+          <div aria-hidden="true" className="d-grid gap-2">
             {Array.from({ length: 5 }, (_, index) => (
-              <div key={index} className="h-10 animate-pulse rounded-md bg-muted" />
+              <div key={index} className="placeholder-glow">
+                <span className="placeholder w-100 h-10 rounded" />
+              </div>
             ))}
           </div>
         </>
       )}
 
       {isError && (
-        <div
-          role="alert"
-          className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-        >
+        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -139,7 +141,7 @@ export function OrdersRoute() {
       )}
 
       {data && data.items.length === 0 && (
-        <div className="grid justify-items-start gap-3">
+        <div className="d-grid justify-items-start gap-2">
           {params.page > 1 ? (
             <>
               <p>No orders on this page.</p>
@@ -166,42 +168,42 @@ export function OrdersRoute() {
       )}
 
       {data && data.items.length > 0 && (
-        <div className="overflow-x-auto" aria-busy={isFetching}>
-          <table className="w-full text-left text-sm">
-            <caption className="sr-only">Your orders</caption>
+        <div className="table-responsive" aria-busy={isFetching}>
+          <table className="table table-hover align-middle small">
+            <caption className="visually-hidden">Your orders</caption>
             <thead>
-              <tr className="border-b">
-                <th scope="col" className="py-2 pr-4 font-medium">
+              <tr>
+                <th scope="col" className="py-2 pe-3 fw-medium">
                   Order
                 </th>
-                <th scope="col" className="py-2 pr-4 font-medium">
+                <th scope="col" className="py-2 pe-3 fw-medium">
                   Date
                 </th>
-                <th scope="col" className="py-2 pr-4 font-medium">
+                <th scope="col" className="py-2 pe-3 fw-medium">
                   Status
                 </th>
-                <th scope="col" className="py-2 text-right font-medium">
+                <th scope="col" className="py-2 text-end fw-medium">
                   Total
                 </th>
               </tr>
             </thead>
             <tbody>
               {data.items.map((order) => (
-                <tr key={order.id} className="border-b">
-                  <th scope="row" className="py-3 pr-4 font-normal">
+                <tr key={order.id}>
+                  <th scope="row" className="py-3 pe-3 fw-normal">
                     <Link
                       to={`/orders/${order.id}`}
-                      className="font-mono underline underline-offset-4"
+                      className="font-monospace text-decoration-underline"
                       aria-label={`Order ${shortId(order.id)}`}
                     >
                       #{shortId(order.id)}
                     </Link>
                   </th>
-                  <td className="py-3 pr-4">{formatDateTime(order.createdAt)}</td>
-                  <td className="py-3 pr-4">
+                  <td className="py-3 pe-3">{formatDateTime(order.createdAt)}</td>
+                  <td className="py-3 pe-3">
                     <StatusBadge status={order.status} />
                   </td>
-                  <td className="py-3 text-right">{formatMoneyIn(order.total, order.currency)}</td>
+                  <td className="py-3 text-end">{formatMoneyIn(order.total, order.currency)}</td>
                 </tr>
               ))}
             </tbody>
@@ -210,13 +212,13 @@ export function OrdersRoute() {
       )}
 
       {data && data.totalCount > 0 && (
-        <nav aria-label="Pagination" className="flex items-center gap-3">
+        <nav aria-label="Pagination" className="d-flex align-items-center gap-2">
           {params.page > 1 ? (
             <Link to={pageLink(params.page - 1)} className={buttonVariants({ variant: 'outline' })}>
               Previous
             </Link>
           ) : null}
-          <span className="text-sm">
+          <span className="small">
             Page {params.page} of {totalPages}
           </span>
           {params.page < totalPages ? (

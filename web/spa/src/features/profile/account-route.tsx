@@ -33,26 +33,23 @@ export function AccountRoute() {
   return (
     <AccountLayout>
       <title>My account · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         My account
       </h1>
       {/* Always in the page, so the message is announced when it appears. */}
-      <p role="status" className="min-h-5 text-sm">
+      <p role="status" className="min-h-5 small">
         {savedFlag(location.state) ? 'Profile saved.' : ''}
       </p>
 
       {isPending && <p role="status">Loading your profile…</p>}
 
       {isError && error instanceof ApiError && error.status === 404 && (
-        <p role="alert" className="rounded-md border border-destructive p-3">
+        <p role="alert" className="alert alert-danger mb-0">
           We could not find your account.
         </p>
       )}
       {isError && !(error instanceof ApiError && error.status === 404) && (
-        <div
-          role="alert"
-          className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-        >
+        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -67,25 +64,28 @@ export function AccountRoute() {
       )}
 
       {data && (
-        <section aria-labelledby="profile-heading" className="grid gap-3 rounded-lg border p-4">
-          <h2 id="profile-heading" className="text-lg font-medium">
+        <section
+          aria-labelledby="profile-heading"
+          className="d-grid gap-2 card card-body shadow-sm p-3"
+        >
+          <h2 id="profile-heading" className="fs-5 fw-medium">
             Profile
           </h2>
-          <dl className="grid gap-3 text-sm sm:grid-cols-[8rem_1fr]">
-            <dt className="font-medium">Name</dt>
+          <dl className="kv-grid small">
+            <dt className="fw-medium">Name</dt>
             <dd>
               {data.profile.firstName} {data.profile.lastName}
             </dd>
-            <dt className="font-medium">Email</dt>
+            <dt className="fw-medium">Email</dt>
             <dd>
               {data.profile.email}
-              <span className="block text-muted-foreground">
+              <span className="d-block text-body-secondary">
                 To change your email, contact support.
               </span>
             </dd>
-            <dt className="font-medium">Phone</dt>
+            <dt className="fw-medium">Phone</dt>
             <dd>{data.profile.phone ?? 'Not added'}</dd>
-            <dt className="font-medium">Member since</dt>
+            <dt className="fw-medium">Member since</dt>
             <dd>{formatDateTime(data.profile.createdAt)}</dd>
           </dl>
           <div>
@@ -114,11 +114,14 @@ function SignOutEverywhere() {
   })
 
   return (
-    <section aria-labelledby="everywhere-heading" className="grid gap-3 rounded-lg border p-4">
-      <h2 id="everywhere-heading" className="text-lg font-medium">
+    <section
+      aria-labelledby="everywhere-heading"
+      className="d-grid gap-2 card card-body shadow-sm p-3"
+    >
+      <h2 id="everywhere-heading" className="fs-5 fw-medium">
         Sign out everywhere
       </h2>
-      <p className="text-sm">
+      <p className="small">
         Ends your session on every device. Other devices are signed out the next time they refresh.
       </p>
       <div>

@@ -22,9 +22,9 @@ export function adminLoader(queryClient: QueryClient) {
 /** A titled number box. */
 function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border p-4">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className="mt-1 text-2xl font-semibold">{children}</dd>
+    <div className="card card-body shadow-sm p-3">
+      <dt className="small text-body-secondary">{label}</dt>
+      <dd className="mt-1 fs-3 fw-semibold">{children}</dd>
     </div>
   )
 }
@@ -32,10 +32,7 @@ function Stat({ label, children }: { label: string; children: React.ReactNode })
 /** Shows a failed report with a retry button, so one failing report does not hide the other. */
 function ReportError({ error, retry, busy }: { error: unknown; retry: () => void; busy: boolean }) {
   return (
-    <div
-      role="alert"
-      className="grid justify-items-start gap-3 rounded-md border border-destructive p-4"
-    >
+    <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
       <p>{apiErrorMessage(error)}</p>
       <Button variant="outline" disabled={busy} onClick={retry}>
         {busy ? 'Trying again…' : 'Try again'}
@@ -50,13 +47,13 @@ export function AdminRoute() {
   const sales = useQuery(salesQuery())
 
   return (
-    <section className="grid gap-4">
+    <section className="d-grid gap-3">
       <title>Back office · Orders Shop</title>
-      <h1 tabIndex={-1} className="text-2xl font-semibold outline-none">
+      <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Back office
       </h1>
 
-      <h2 className="text-lg font-medium">Stock</h2>
+      <h2 className="fs-5 fw-medium">Stock</h2>
       {lowStock.isPending && <p role="status">Loading stock…</p>}
       {lowStock.isError && (
         <ReportError
@@ -73,7 +70,7 @@ export function AdminRoute() {
         </dl>
       )}
 
-      <h2 className="text-lg font-medium">Sales, last {SALES_DAYS} days</h2>
+      <h2 className="fs-5 fw-medium">Sales, last {SALES_DAYS} days</h2>
       {sales.isPending && <p role="status">Loading sales…</p>}
       {sales.isError && (
         <ReportError
@@ -85,7 +82,7 @@ export function AdminRoute() {
         />
       )}
       {sales.data && (
-        <dl className="grid gap-4 sm:grid-cols-3">
+        <dl className="kv-grid kv-grid-3">
           <Stat label="Orders">{sales.data.totals.orderCount}</Stat>
           <Stat label="Units sold">{sales.data.totals.units}</Stat>
           <Stat label="Revenue">{formatMoney(sales.data.totals.revenue)}</Stat>
@@ -93,7 +90,7 @@ export function AdminRoute() {
       )}
 
       <p>
-        <Link to="/admin/products" className="underline">
+        <Link to="/admin/products" className="text-decoration-underline">
           Manage products
         </Link>
       </p>
