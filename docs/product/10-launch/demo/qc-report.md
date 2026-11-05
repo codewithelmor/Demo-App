@@ -66,3 +66,22 @@ Video: `exports/orders-shop-web-demo-v2.mp4` (not committed) | SHA-256: `afe791e
 **Result:** Pass (self-check only). Not reviewed by `market-reviewer`; not uploaded.
 
 **Notes:** the stale "Fix 1 problem" alert stays visible on the register form until it is submitted (app behaviour, left as is). Recorded at 1280x720 and upscaled, so text is slightly soft. The edge-tts voice sends narration text to Microsoft; licence still to be recorded by `market-legal-check` before publishing.
+
+---
+
+# Demo quality check: web front end v3 (Material UI)
+
+Video: `exports/orders-shop-web-demo-v3.mp4` (not committed) | SHA-256: `ff1ac9fd96c5d76765fda67fd8d5b7173be8467f676224659b76b2162befe0e8` | App: web 0.1.0, commit 7088117 (image rebuilt before recording) | Checked: 2026-11-05
+
+| # | Check | Result | Notes |
+|---|---|---|---|
+| 1 | Journeys J1-J5 shown start to finish | Pass | 31 recorder steps passed (`web3-record.mjs`), plus a dry run first; no failed or skipped step |
+| 2 | New UI shown: Material UI look, alerts, toast messages, Material confirmation dialogs, green/orange/red buttons | Partly checked | Frames reviewed by eye: catalog, order page with the "Order placed." toast and the inline alert, product form validation. Other toasts (cancel, profile, product save/archive/restore) and the confirmation dialogs were not looked at frame by frame; the recorder's checks passed for them |
+| 3 | Private data / secrets | Pass | Only a generated example.test address and the seeded dev admin address; admin password never shown |
+| 4 | Format | Pass | H.264, 1920x1080, 30 fps, AAC 48 kHz, 341.2 s (5:41), -16.4 LUFS |
+| 5 | Captions | Pass | 95 cues, .srt/.vtt plus soft track; 7 chapters as in v2 |
+| 6 | AI voice disclosed | Pass | End card |
+
+**Result:** Pass with one check only partly done (self-check). Not reviewed by `market-reviewer`; not uploaded.
+
+**Notes:** same limits as v2: recorded at 1280x720 and upscaled, so text is slightly soft; the edge-tts voice sends narration text to Microsoft and its licence is still to be recorded by `market-legal-check` before publishing. The voice service dropped one request during generation; `web3-tts.py` now retries. The initial JS of the app is over the 200 KB bundle budget (about 205 KB), which is an app issue, not a video issue.

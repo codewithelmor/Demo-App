@@ -46,3 +46,13 @@ Admin screens for customers, orders, reports, users and audit logs, the Admin id
 ## Approval
 
 This plan was written and executed in one run because the request asked for the finished video. Nothing is published.
+
+## Versions
+
+| Version | App look | Scripts (`automation/`) | Captions |
+|---|---|---|---|
+| v1 | Plain Bootstrap | `web-*` | `orders-shop-web-demo.*` |
+| v2 | Bootstrap Lumen + SweetAlert2 | `web2-*` | `orders-shop-web-demo-v2.*` |
+| v3 | Material UI, alerts and toasts | `web3-*` | `orders-shop-web-demo-v3.*` |
+
+v3 follows the same journeys and segment ids as v2; only the narration wording changed (Material UI, alerts, toasts, labels above fields, orange Edit, red Delete) and the confirmation helper in `web3-record.mjs` targets the Material dialog. Nothing is published.

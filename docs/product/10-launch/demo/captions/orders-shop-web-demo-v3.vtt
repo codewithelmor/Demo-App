@@ -1,0 +1,349 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:04.812
+Welcome to the updated Orders Shop, the web
+front end for the Orders API.
+
+00:00:04.812 --> 00:00:06.806
+It is now built with Material UI,
+
+00:00:06.806 --> 00:00:11.640
+with clear alerts for problems and short toast
+messages when something succeeds.
+
+00:00:11.640 --> 00:00:14.904
+It still asks you to confirm
+before it saves anything.
+
+00:00:14.904 --> 00:00:18.530
+This tour uses the real app, running
+locally with demo data.
+
+00:00:18.530 --> 00:00:22.216
+We start as a customer, and then
+switch to the administrator.
+
+00:00:24.027 --> 00:00:25.576
+This is the sign-in page.
+
+00:00:25.576 --> 00:00:28.179
+A new customer starts with Create account.
+
+00:00:28.886 --> 00:00:32.701
+Registration asks for a name, an
+email, and a password,
+
+00:00:32.701 --> 00:00:34.782
+with a label above each field.
+
+00:00:34.782 --> 00:00:40.538
+The form checks as you type, so a password that
+is too short is flagged right away,
+
+00:00:40.538 --> 00:00:42.758
+in red, before anything is sent.
+
+00:00:43.458 --> 00:00:47.941
+The password needs at least fifteen
+characters, with no composition rules,
+
+00:00:47.941 --> 00:00:49.334
+and spaces are allowed.
+
+00:00:49.334 --> 00:00:51.212
+So a short sentence works well.
+
+00:00:51.212 --> 00:00:54.968
+Then a confirmation dialog asks
+whether to create the account,
+
+00:00:54.968 --> 00:00:57.210
+and nothing is sent until we say yes.
+
+00:00:57.921 --> 00:01:01.089
+The result is always the same
+check your email message,
+
+00:01:01.089 --> 00:01:03.969
+whether or not the address was
+already registered.
+
+00:01:03.969 --> 00:01:05.985
+That keeps account lookups private.
+
+00:01:06.687 --> 00:01:10.587
+If you try to sign in before
+confirming, an alert explains why,
+
+00:01:10.587 --> 00:01:13.311
+and offers to resend the
+confirmation email.
+
+00:01:14.012 --> 00:01:16.450
+In this local setup, email is simulated,
+
+00:01:16.450 --> 00:01:19.802
+and the confirmation link is
+written to the server log.
+
+00:01:19.802 --> 00:01:21.753
+Opening it confirms the address,
+
+00:01:21.753 --> 00:01:25.532
+and the app removes the token from the
+address bar right away.
+
+00:01:26.233 --> 00:01:28.057
+Now the customer can sign in.
+
+00:01:31.792 --> 00:01:35.807
+Signed-in customers land on the
+catalog: eight demo products,
+
+00:01:35.807 --> 00:01:38.176
+each with a price and a stock state.
+
+00:01:38.891 --> 00:01:42.754
+Search matches name or SKU, and
+starts after two characters.
+
+00:01:42.754 --> 00:01:44.621
+One letter only shows a hint.
+
+00:01:44.621 --> 00:01:48.935
+Typing key narrows the list, and the
+search is kept in the address,
+
+00:01:48.935 --> 00:01:50.867
+so the page can be bookmarked.
+
+00:01:51.578 --> 00:01:53.362
+Sorting and filters work too.
+
+00:01:53.362 --> 00:01:56.315
+Here the list runs from most to
+least expensive,
+
+00:01:56.315 --> 00:02:00.314
+limited to products under one hundred
+dollars, and in stock only.
+
+00:02:01.018 --> 00:02:03.784
+Opening a product shows its
+details and stock,
+
+00:02:03.784 --> 00:02:06.730
+with a quantity picker and an
+add to cart button.
+
+00:02:07.444 --> 00:02:10.674
+Let's add the keyboard with the
+green Add to cart button,
+
+00:02:10.674 --> 00:02:12.941
+and then a wireless mouse from the list.
+
+00:02:12.941 --> 00:02:15.604
+The cart count in the header
+updates each time.
+
+00:02:16.315 --> 00:02:19.984
+In the cart, quantities can be
+changed and products removed,
+
+00:02:19.984 --> 00:02:21.940
+and the estimated total follows.
+
+00:02:21.940 --> 00:02:25.915
+The cart lives in this browser, and is
+cleared when you sign out.
+
+00:02:26.627 --> 00:02:30.407
+Placing the order asks for
+confirmation in a Material dialog,
+
+00:02:30.407 --> 00:02:34.187
+then checks current prices and stock,
+and sends it just once.
+
+00:02:34.187 --> 00:02:36.790
+The new order opens right away as pending,
+
+00:02:36.790 --> 00:02:39.640
+and a toast message says the
+order was placed.
+
+00:02:39.640 --> 00:02:42.491
+It shows the items, total, and
+status history.
+
+00:02:43.195 --> 00:02:48.085
+My orders lists every order, with filters for
+status and dates, and sorting.
+
+00:02:48.085 --> 00:02:50.659
+The filters stay in the address as well.
+
+00:02:51.372 --> 00:02:54.817
+A pending order can be cancelled,
+with an optional reason.
+
+00:02:54.817 --> 00:02:59.628
+A toast confirms it, the status changes to
+cancelled, and the history records it.
+
+00:03:00.342 --> 00:03:02.203
+My account shows the profile.
+
+00:03:02.203 --> 00:03:03.678
+The email is read only.
+
+00:03:03.678 --> 00:03:06.951
+Edit profile changes the name
+and the phone number.
+
+00:03:06.951 --> 00:03:10.608
+Save changes stays disabled until
+something is different,
+
+00:03:10.608 --> 00:03:12.725
+and saving asks for confirmation.
+
+00:03:12.725 --> 00:03:16.254
+When it is saved, a toast says the
+profile was updated.
+
+00:03:16.967 --> 00:03:19.824
+Changing the password asks for
+confirmation too.
+
+00:03:19.824 --> 00:03:24.407
+It then signs you out on every device, so you
+sign in again with the new one.
+
+00:03:30.643 --> 00:03:34.579
+Sign out everywhere ends the sessions
+on all devices at once.
+
+00:03:35.292 --> 00:03:38.705
+If you forget the password, enter
+the email, confirm,
+
+00:03:38.705 --> 00:03:41.023
+and you always see the same message.
+
+00:03:41.023 --> 00:03:46.240
+The reset link, again from the server log,
+opens a page to choose a new password.
+
+00:03:46.240 --> 00:03:49.524
+After one more confirmation, you
+return to sign-in.
+
+00:03:52.728 --> 00:03:55.064
+Customers cannot open the back office.
+
+00:03:55.064 --> 00:03:58.200
+The admin address shows a
+not-allowed page instead.
+
+00:03:58.910 --> 00:04:01.137
+Delete account explains what happens.
+
+00:04:01.137 --> 00:04:05.050
+Personal details are erased, order
+records are kept without them,
+
+00:04:05.050 --> 00:04:06.796
+and you cannot sign in again.
+
+00:04:06.796 --> 00:04:09.926
+It asks for the current password
+and a confirmation.
+
+00:04:10.628 --> 00:04:13.868
+Afterwards, the same
+credentials no longer work.
+
+00:04:17.729 --> 00:04:22.030
+Administrators sign in on the same page,
+and land in the back office.
+
+00:04:22.030 --> 00:04:26.705
+The dashboard shows the low-stock count, and
+the last thirty days of sales.
+
+00:04:27.413 --> 00:04:32.491
+The Products section lists every product,
+with search, sorting, and paging.
+
+00:04:32.491 --> 00:04:37.637
+The Edit button is orange and Delete is red,
+so the risky action stands out.
+
+00:04:38.342 --> 00:04:41.295
+Creating a product validates
+the form first.
+
+00:04:41.295 --> 00:04:46.798
+Then the name, SKU, description, price, and
+stock are saved, after a confirmation,
+
+00:04:46.798 --> 00:04:49.550
+and a toast says the product was created.
+
+00:04:50.313 --> 00:04:54.473
+Editing loads the latest version and
+saves with a concurrency check,
+
+00:04:54.473 --> 00:04:57.593
+so two admins cannot silently
+overwrite each other.
+
+00:04:57.593 --> 00:05:00.897
+Here I raise the stock, and a
+toast confirms the save.
+
+00:05:01.597 --> 00:05:03.510
+Deleting asks for confirmation.
+
+00:05:03.510 --> 00:05:06.904
+It is a soft delete: customers
+stop seeing the product,
+
+00:05:06.904 --> 00:05:09.188
+and existing orders keep their lines.
+
+00:05:09.188 --> 00:05:11.533
+A toast says the product was archived.
+
+00:05:12.244 --> 00:05:15.818
+With Include deleted ticked, the
+product shows as deleted,
+
+00:05:15.818 --> 00:05:18.652
+and one click restores it,
+with another toast.
+
+00:05:20.616 --> 00:05:24.762
+That is the customer portal, and the
+first part of the back office.
+
+00:05:24.762 --> 00:05:27.609
+Screens for customers, orders,
+reports, users,
+
+00:05:27.609 --> 00:05:30.332
+and audit logs are not in the
+interface yet.
+
+00:05:30.332 --> 00:05:33.054
+For now those are available
+through the API.
+
+00:05:33.054 --> 00:05:37.943
+To try it yourself, start the stack with
+docker compose up, and open localhost,
+
+00:05:37.943 --> 00:05:39.552
+port eight zero eight one.
