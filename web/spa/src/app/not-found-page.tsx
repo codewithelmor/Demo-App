@@ -1,6 +1,5 @@
 /** The "page not found" page (HTTP 404 equivalent). */
-import { Link } from 'react-router'
-import { buttonVariants } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
 
 /**
  * SY-1: shown when the URL matches no route, or when the API says a resource does not exist.
@@ -15,9 +14,7 @@ export function NotFoundPage() {
       </h1>
       <p>Check the address, or go back to the start.</p>
       <div>
-        <Link to="/" className={buttonVariants()}>
-          Go to the start
-        </Link>
+        <LinkButton to="/">Go to the start</LinkButton>
       </div>
     </section>
   )

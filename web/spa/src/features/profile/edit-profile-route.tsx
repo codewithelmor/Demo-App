@@ -1,13 +1,15 @@
+import { useToast } from '@/theme/toast'
+import Alert from '@mui/material/Alert'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { confirmSubmit } from '@/lib/confirm'
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import { FormAlert } from '@/components/form-alert'
 import { FormField } from '@/components/form-field'
 import { SubmitRow } from '@/components/submit-row'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AccountLayout } from '@/features/profile/account-nav'
 import {
@@ -64,7 +66,7 @@ export function EditProfileRoute() {
       </h1>
       {isPending && <p role="status">Loading your profile…</p>}
       {isError && (
-        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+        <Alert severity="error" role="alert" className="gap-2">
           <p>{apiErrorMessage(error)}</p>
           {!(error instanceof ApiError && error.status === 404) && (
             <Button
@@ -77,7 +79,7 @@ export function EditProfileRoute() {
               {isFetching ? 'Trying again…' : 'Try again'}
             </Button>
           )}
-        </div>
+        </Alert>
       )}
       {data && <EditForm data={data} />}
     </AccountLayout>
@@ -124,11 +126,13 @@ function EditForm({ data }: { data: ProfileData }) {
     if (conflicts > 0) conflictRef.current?.focus()
   }, [conflicts])
 
+  const toast = useToast()
   const mutation = useMutation({
     mutationFn: ({ etag, values }: SaveVariables) => updateProfile(etag, values),
     onSuccess: async (saved) => {
       // The response has the saved values and the new ETag; they replace the cached profile.
       queryClient.setQueryData(profileKey, saved)
+      toast.success('Your profile was updated.')
       await navigate('/account', { state: { saved: true } })
     },
     onError: async (cause, variables) => {
@@ -204,17 +208,18 @@ function EditForm({ data }: { data: ProfileData }) {
   return (
     <>
       {conflicts > 0 && (
-        <div
-          ref={conflictRef}
+        <Alert
+          severity="warning"
           role="alert"
+          ref={conflictRef}
           tabIndex={-1}
-          className="alert alert-warning mb-0 small focus-target"
+          className="focus-target"
         >
           <p className="fw-medium">This record changed since you opened it.</p>
           <p>
             The form now shows the latest saved values. Your changes are shown under each field.
           </p>
-        </div>
+        </Alert>
       )}
       <FormAlert failure={failure} />
       <form
@@ -268,9 +273,9 @@ function EditForm({ data }: { data: ProfileData }) {
             secondsLeft={locked ? secondsLeft : 0}
             disabled={!hasChanges}
           />
-          <Link to="/account" className={buttonVariants({ variant: 'outline' })}>
+          <LinkButton to="/account" variant="outline">
             Cancel
-          </Link>
+          </LinkButton>
         </div>
       </form>
     </>

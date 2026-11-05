@@ -1,3 +1,4 @@
+import Paper from '@mui/material/Paper'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -21,7 +22,12 @@ export function ProductCard({ product, inCart, listSearch, onAdd }: ProductCardP
   const inStock = product.stockQuantity > 0
   const label = inCart > 0 ? 'Add one more' : 'Add to cart'
   return (
-    <li className="card card-body shadow-sm d-grid align-content-start gap-2 p-3">
+    <Paper
+      component="li"
+      variant="outlined"
+      className="d-grid align-content-start gap-2"
+      sx={{ p: 2 }}
+    >
       <h2 className="fs-5 fw-medium">
         <Link to={`/products/${product.id}`} state={{ list: listSearch }}>
           {product.name}
@@ -53,6 +59,6 @@ export function ProductCard({ product, inCart, listSearch, onAdd }: ProductCardP
           </Button>
         )}
       </div>
-    </li>
+    </Paper>
   )
 }

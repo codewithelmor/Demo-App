@@ -1,3 +1,5 @@
+import FormHelperText from '@mui/material/FormHelperText'
+import FormLabel from '@mui/material/FormLabel'
 import { Minus, Plus } from 'lucide-react'
 import { useId, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -63,7 +65,7 @@ export function QuantityInput({ label, value, max, onChange, disabled }: Quantit
 
   return (
     <div>
-      <div className="input-group">
+      <div className="d-flex align-items-end gap-1">
         <Button
           type="button"
           variant="outline"
@@ -76,7 +78,10 @@ export function QuantityInput({ label, value, max, onChange, disabled }: Quantit
         >
           <Minus aria-hidden="true" size={16} />
         </Button>
-        <div className="form-floating">
+        <div className="flex-fill">
+          <FormLabel htmlFor={id} sx={{ display: 'block', mb: 0.5, fontSize: '0.875rem' }}>
+            {label}
+          </FormLabel>
           <Input
             id={id}
             aria-invalid={error ? true : undefined}
@@ -98,7 +103,6 @@ export function QuantityInput({ label, value, max, onChange, disabled }: Quantit
               }
             }}
           />
-          <label htmlFor={id}>{label}</label>
         </div>
         <Button
           type="button"
@@ -114,9 +118,9 @@ export function QuantityInput({ label, value, max, onChange, disabled }: Quantit
         </Button>
       </div>
       {error && (
-        <div id={errorId} className="invalid-feedback d-block fw-semibold">
+        <FormHelperText id={errorId} error sx={{ fontWeight: 600 }}>
           {error}
-        </div>
+        </FormHelperText>
       )}
     </div>
   )

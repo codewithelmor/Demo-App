@@ -1,15 +1,17 @@
 /** FR-F052, FR-F053: create a product, and replace one with If-Match. */
+import { useToast } from '@/theme/toast'
+import Alert from '@mui/material/Alert'
 import { confirmSubmit } from '@/lib/confirm'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import { Link, useNavigate, useParams, type LoaderFunctionArgs } from 'react-router'
+import { useNavigate, useParams, type LoaderFunctionArgs } from 'react-router'
 import { productKeys } from '@/api/products'
 import { FormAlert } from '@/components/form-alert'
 import { FormField } from '@/components/form-field'
 import { SubmitRow } from '@/components/submit-row'
-import { buttonVariants, Button } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -75,7 +77,7 @@ export function AdminProductEditRoute() {
       </h1>
       {isPending && <p role="status">Loading product…</p>}
       {isError && (
-        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+        <Alert severity="error" role="alert" className="gap-2">
           <p>{apiErrorMessage(error)}</p>
           {!(error instanceof ApiError && error.status === 404) && (
             <Button
@@ -88,7 +90,7 @@ export function AdminProductEditRoute() {
               {isFetching ? 'Trying again…' : 'Try again'}
             </Button>
           )}
-        </div>
+        </Alert>
       )}
       {data && <ProductForm data={data} />}
     </section>
@@ -141,11 +143,13 @@ function ProductForm({ data }: { data?: AdminProductData }) {
     if (conflicts > 0) conflictRef.current?.focus()
   }, [conflicts])
 
+  const toast = useToast()
   const mutation = useMutation({
     mutationFn: (values: ProductFormValues) =>
       data ? updateProduct(data.product.id, etag, values) : createProduct(values),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: productKeys.all })
+      toast.success(data ? 'Product saved.' : 'Product created.')
       await navigate('/admin/products')
     },
     onError: async (cause) => {
@@ -172,15 +176,16 @@ function ProductForm({ data }: { data?: AdminProductData }) {
   return (
     <>
       {conflicts > 0 && (
-        <div
-          ref={conflictRef}
+        <Alert
+          severity="warning"
           role="alert"
+          ref={conflictRef}
           tabIndex={-1}
-          className="alert alert-warning mb-0 small focus-target"
+          className="focus-target"
         >
           <p className="fw-medium">This product changed since you opened it.</p>
           <p>The form now shows the latest saved values. Apply your change again and save.</p>
-        </div>
+        </Alert>
       )}
       <FormAlert failure={failure} />
       <form
@@ -231,9 +236,9 @@ function ProductForm({ data }: { data?: AdminProductData }) {
             secondsLeft={locked ? secondsLeft : 0}
             disabled={!hasChanges}
           />
-          <Link to="/admin/products" className={buttonVariants({ variant: 'outline' })}>
+          <LinkButton to="/admin/products" variant="outline">
             Cancel
-          </Link>
+          </LinkButton>
         </div>
       </form>
     </>

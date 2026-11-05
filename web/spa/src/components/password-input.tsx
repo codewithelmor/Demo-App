@@ -17,7 +17,7 @@ export function PasswordInput(props: Omit<ComponentProps<typeof Input>, 'type'>)
         type="button"
         variant="ghost"
         size="icon"
-        className="position-absolute top-0 end-0 h-100 text-body-secondary"
+        className="pw-toggle"
         aria-label={visible ? 'Hide password' : 'Show password'}
         onClick={() => {
           setVisible((current) => !current)

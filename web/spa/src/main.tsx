@@ -17,8 +17,8 @@ import { RouterProvider } from 'react-router/dom'
 import { createQueryClient } from '@/app/query-client'
 import { CartProvider } from '@/hooks/cart-provider'
 import { createAppRouter } from '@/app/router'
-import 'bootswatch/dist/lumen/bootstrap.min.css'
-import 'sweetalert2/dist/sweetalert2.min.css'
+import { AppProviders } from '@/theme/app-providers'
+import '@/styles/utilities.css'
 import '@/styles/globals.css'
 
 const container = document.getElementById('root')
@@ -35,9 +35,11 @@ const router = createAppRouter(queryClient)
 createRoot(container).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
+      <AppProviders>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </AppProviders>
     </QueryClientProvider>
   </StrictMode>,
 )

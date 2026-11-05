@@ -1,3 +1,5 @@
+import { useToast } from '@/theme/toast'
+import Alert from '@mui/material/Alert'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { cancelOrder, orderKeys } from '@/api/orders'
@@ -45,9 +47,11 @@ export function CancelOrderDialog({ orderId, onConflict }: CancelOrderDialogProp
   // A cancelled order puts its items back into stock, so cached product stock is stale too.
   const reloadProducts = () => queryClient.invalidateQueries({ queryKey: productKeys.all })
 
+  const toast = useToast()
   const mutation = useMutation({
     mutationFn: (text: string) => cancelOrder(orderId, text),
     onSuccess: async () => {
+      toast.success('The order was cancelled.')
       // Stay "pending" until the order is read again, so the new status is on screen when the dialog closes.
       void reloadProducts()
       await reload()
@@ -111,10 +115,10 @@ export function CancelOrderDialog({ orderId, onConflict }: CancelOrderDialogProp
         </AlertDialogDescription>
 
         {failure && (
-          <div role="alert" className="alert alert-danger small mb-0">
+          <Alert severity="error" role="alert">
             <p className="mb-0">{messageFor(failure)}</p>
             {reference && <p className="mt-1 mb-0 opacity-75">Reference: {reference}</p>}
-          </div>
+          </Alert>
         )}
 
         <FormField

@@ -174,7 +174,7 @@ describe('place order', () => {
     const busy = await screen.findByRole('button', { name: 'Placing order…' })
     expect(busy).toBeDisabled()
     expect(busy).toHaveAttribute('aria-busy', 'true')
-    await user.click(busy)
+    await userEvent.setup({ pointerEventsCheck: 0 }).click(busy)
     release()
     await screen.findByRole('heading', { level: 1, name: 'Order #11111111' })
     expect(posts).toBe(1)

@@ -1,7 +1,11 @@
+import FormControlLabel from '@mui/material/FormControlLabel'
+import { Checkbox } from '@/components/ui/checkbox'
 /** FR-F051, FR-F054: the admin product list, with delete and restore. */
+import { useToast } from '@/theme/toast'
+import Alert from '@mui/material/Alert'
 import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link, useSearchParams, type LoaderFunctionArgs } from 'react-router'
+import { useSearchParams, type LoaderFunctionArgs } from 'react-router'
 import { productKeys, type Product } from '@/api/products'
 import { SearchBox } from '@/components/search-box'
 import {
@@ -13,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { FormField } from '@/components/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
 import {
@@ -57,9 +61,11 @@ function DeleteProductButton({
   onError: (cause: unknown) => void
 }) {
   const [open, setOpen] = useState(false)
+  const toast = useToast()
   const mutation = useMutation({
     mutationFn: () => deleteProduct(product.id),
     onSuccess: () => {
+      toast.success('Product archived.')
       setOpen(false)
       onDone()
     },
@@ -114,9 +120,13 @@ function RestoreProductButton({
   onDone: () => void
   onError: (cause: unknown) => void
 }) {
+  const toast = useToast()
   const mutation = useMutation({
     mutationFn: () => restoreProduct(product.id),
-    onSuccess: onDone,
+    onSuccess: () => {
+      toast.success('Product restored.')
+      onDone()
+    },
     onError,
   })
   return (
@@ -179,9 +189,7 @@ export function AdminProductsRoute() {
         <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
           Products
         </h1>
-        <Link to="/admin/products/new" className={buttonVariants()}>
-          New product
-        </Link>
+        <LinkButton to="/admin/products/new">New product</LinkButton>
       </div>
 
       <div className="d-flex flex-wrap align-items-end gap-3">
@@ -213,18 +221,19 @@ export function AdminProductsRoute() {
             </NativeSelect>
           )}
         />
-        <label className="d-flex align-items-center gap-2 pb-2 small">
-          <input
-            type="checkbox"
-            className="form-check-input mt-0"
-            checked={params.includeDeleted}
-            onChange={(event) => {
-              const includeDeleted = event.target.checked
-              update((current) => ({ ...current, includeDeleted, page: 1 }))
-            }}
-          />
-          Include deleted
-        </label>
+        <FormControlLabel
+          sx={{ m: 0, pb: 1, fontSize: '0.875em' }}
+          label="Include deleted"
+          control={
+            <Checkbox
+              checked={params.includeDeleted}
+              onChange={(event) => {
+                const includeDeleted = event.target.checked
+                update((current) => ({ ...current, includeDeleted, page: 1 }))
+              }}
+            />
+          }
+        />
       </div>
 
       {/* Always in the page, so counts and results of delete and restore are announced. */}
@@ -236,14 +245,14 @@ export function AdminProductsRoute() {
             : ''}
       </p>
       {actionError !== undefined && (
-        <p role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           {apiErrorMessage(actionError)}
-        </p>
+        </Alert>
       )}
 
       {isPending && <p role="status">Loading products…</p>}
       {isError && (
-        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+        <Alert severity="error" role="alert" className="gap-2">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -254,7 +263,7 @@ export function AdminProductsRoute() {
           >
             {isFetching ? 'Trying again…' : 'Try again'}
           </Button>
-        </div>
+        </Alert>
       )}
 
       {data && data.items.length === 0 && (
@@ -315,13 +324,14 @@ export function AdminProductsRoute() {
                         />
                       ) : (
                         <>
-                          <Link
+                          <LinkButton
                             to={`/admin/products/${product.id}`}
                             aria-label={`Edit ${product.name}`}
-                            className={buttonVariants({ variant: 'warning', size: 'sm' })}
+                            variant="warning"
+                            size="sm"
                           >
                             Edit
-                          </Link>
+                          </LinkButton>
                           <DeleteProductButton
                             product={product}
                             onDone={() => {
@@ -343,17 +353,17 @@ export function AdminProductsRoute() {
       {data && data.totalCount > 0 && (
         <nav aria-label="Pagination" className="d-flex align-items-center gap-2">
           {params.page > 1 ? (
-            <Link to={pageLink(params.page - 1)} className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to={pageLink(params.page - 1)} variant="outline">
               Previous
-            </Link>
+            </LinkButton>
           ) : null}
           <span className="small">
             Page {params.page} of {totalPages}
           </span>
           {params.page < totalPages ? (
-            <Link to={pageLink(params.page + 1)} className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to={pageLink(params.page + 1)} variant="outline">
               Next
-            </Link>
+            </LinkButton>
           ) : null}
         </nav>
       )}

@@ -96,16 +96,9 @@ export function CatalogFilters({ params, onApply, onClear, canClear }: CatalogFi
           )}
         />
       </div>
-      <div className="form-check min-h-10 d-flex align-items-center gap-2 align-self-end mb-0 ps-0">
-        <input
-          id={checkboxId}
-          type="checkbox"
-          className="form-check-input mt-0 ms-0"
-          {...register('inStock')}
-        />
-        <label htmlFor={checkboxId} className="form-check-label">
-          In stock only
-        </label>
+      <div className="min-h-10 d-flex align-items-center gap-2 align-self-end">
+        <input id={checkboxId} type="checkbox" className="check-input" {...register('inStock')} />
+        <label htmlFor={checkboxId}>In stock only</label>
       </div>
       <div className="d-flex gap-2 align-self-end">
         <Button type="submit">Apply filters</Button>

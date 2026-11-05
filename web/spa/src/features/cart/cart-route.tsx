@@ -1,10 +1,11 @@
+import Paper from '@mui/material/Paper'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { productQuery, type Product } from '@/api/products'
 import { QuantityInput } from '@/components/quantity-input'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { PlaceOrderPanel, type LineConflict } from '@/features/cart/place-order-panel'
 import { useCart } from '@/hooks/use-cart'
 import { MAX_LINES, MAX_QUANTITY, type CartLine } from '@/lib/cart-storage'
@@ -154,9 +155,7 @@ export function CartRoute() {
       {cart.count === 0 ? (
         <div className="d-grid justify-items-start gap-2">
           <p>Your cart is empty. Browse products to add some.</p>
-          <Link to="/products" className={buttonVariants()}>
-            Browse products
-          </Link>
+          <LinkButton to="/products">Browse products</LinkButton>
         </div>
       ) : (
         <>
@@ -178,12 +177,12 @@ export function CartRoute() {
             ))}
           </ul>
 
-          <div className="d-grid gap-1 card card-body shadow-sm p-3">
+          <Paper component="div" variant="outlined" className="d-grid gap-1" sx={{ p: 2 }}>
             <p className="fs-5 fw-semibold">Estimated total {formatMoney(totalCents / 100)}</p>
             <p className="small text-body-secondary">
               Final total is confirmed when you place the order.
             </p>
-          </div>
+          </Paper>
           {cart.count >= MAX_LINES && (
             <p className="small">
               Your cart has {MAX_LINES} products, the most for one order. Max {MAX_LINES} products
@@ -196,9 +195,9 @@ export function CartRoute() {
             onConflicts={setConflicts}
           />
           <div>
-            <Link to="/products" className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to="/products" variant="outline">
               Continue shopping
-            </Link>
+            </LinkButton>
           </div>
         </>
       )}
@@ -219,15 +218,26 @@ interface CartRowProps {
 function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) {
   if (state.kind === 'loading') {
     return (
-      <li className="card card-body shadow-sm p-3 small text-body-secondary" aria-busy="true">
+      <Paper
+        component="li"
+        variant="outlined"
+        aria-busy="true"
+        className="small text-body-secondary"
+        sx={{ p: 2 }}
+      >
         Loading product…
-      </li>
+      </Paper>
     )
   }
 
   if (state.kind === 'gone' || state.kind === 'error') {
     return (
-      <li className="d-grid justify-items-start gap-2 card card-body shadow-sm p-3">
+      <Paper
+        component="li"
+        variant="outlined"
+        className="d-grid justify-items-start gap-2"
+        sx={{ p: 2 }}
+      >
         <p className="fw-medium">Product</p>
         <p role="alert" className="small text-danger">
           {state.kind === 'gone' ? 'No longer available.' : messageFor(state.error)}
@@ -242,7 +252,7 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
         >
           Remove
         </Button>
-      </li>
+      </Paper>
     )
   }
 
@@ -251,7 +261,7 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
   const max = Math.min(MAX_QUANTITY, Math.max(product.stockQuantity, 1))
 
   return (
-    <li className="d-grid gap-2 card card-body shadow-sm p-3">
+    <Paper component="li" variant="outlined" className="d-grid gap-2" sx={{ p: 2 }}>
       <div className="d-flex flex-wrap align-items-baseline justify-content-between gap-2">
         <h2 className="fs-5 fw-medium">
           <Link to={`/products/${product.id}`}>{product.name}</Link>
@@ -318,6 +328,6 @@ function CartRow({ line, state, conflict, onQuantity, onRemove }: CartRowProps) 
           </Button>
         </div>
       </div>
-    </li>
+    </Paper>
   )
 }

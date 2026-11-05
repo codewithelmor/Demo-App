@@ -73,7 +73,7 @@ export function OrdersFilters({ params, onApply, onClear, canClear }: OrdersFilt
               <input
                 type="checkbox"
                 value={status}
-                className="size-5 accent-primary"
+                className="check-input"
                 {...register('statuses')}
               />
               {status}

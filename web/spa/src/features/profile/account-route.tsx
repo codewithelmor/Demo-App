@@ -1,6 +1,8 @@
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
 import { useMutation, useQuery, type QueryClient } from '@tanstack/react-query'
-import { Link, useLocation } from 'react-router'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { useLocation } from 'react-router'
+import { Button, LinkButton } from '@/components/ui/button'
 import { AccountLayout } from '@/features/profile/account-nav'
 import { profileQuery, signOutEverywhere } from '@/features/profile/profile-api'
 import { useEndSession } from '@/hooks/use-end-session'
@@ -44,12 +46,12 @@ export function AccountRoute() {
       {isPending && <p role="status">Loading your profile…</p>}
 
       {isError && error instanceof ApiError && error.status === 404 && (
-        <p role="alert" className="alert alert-danger mb-0">
+        <Alert severity="error" role="alert">
           We could not find your account.
-        </p>
+        </Alert>
       )}
       {isError && !(error instanceof ApiError && error.status === 404) && (
-        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+        <Alert severity="error" role="alert" className="gap-2">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -60,13 +62,17 @@ export function AccountRoute() {
           >
             {isFetching ? 'Trying again…' : 'Try again'}
           </Button>
-        </div>
+        </Alert>
       )}
 
       {data && (
-        <section
+        <Paper
+          component="section"
+          variant="outlined"
           aria-labelledby="profile-heading"
-          className="d-grid gap-2 card card-body shadow-sm p-3"
+
+          className="d-grid gap-2"
+          sx={{ p: 2 }}
         >
           <h2 id="profile-heading" className="fs-5 fw-medium">
             Profile
@@ -89,11 +95,9 @@ export function AccountRoute() {
             <dd>{formatDateTime(data.profile.createdAt)}</dd>
           </dl>
           <div>
-            <Link to="/account/edit" className={buttonVariants()}>
-              Edit profile
-            </Link>
+            <LinkButton to="/account/edit">Edit profile</LinkButton>
           </div>
-        </section>
+        </Paper>
       )}
 
       <SignOutEverywhere />
@@ -114,9 +118,13 @@ function SignOutEverywhere() {
   })
 
   return (
-    <section
+    <Paper
+      component="section"
+      variant="outlined"
       aria-labelledby="everywhere-heading"
-      className="d-grid gap-2 card card-body shadow-sm p-3"
+
+      className="d-grid gap-2"
+      sx={{ p: 2 }}
     >
       <h2 id="everywhere-heading" className="fs-5 fw-medium">
         Sign out everywhere
@@ -136,6 +144,6 @@ function SignOutEverywhere() {
           {mutation.isPending ? 'Signing out…' : 'Sign out everywhere'}
         </Button>
       </div>
-    </section>
+    </Paper>
   )
 }

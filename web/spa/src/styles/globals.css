@@ -1,5 +1,4 @@
-/* Bootstrap 5.3.8 + Bootswatch Lumen are imported in main.tsx. The theme's Google Fonts @import is removed at build time
-   (see vite.config.ts): the CSP only allows 'self', so Lumen uses its system font fallback stack. */
+/* Components come from Material UI (see src/theme). utilities.css holds small layout helpers; the rules below style the few plain elements (tables, nav links, checkboxes) with the Material UI theme variables. */
 
 /* The skip link is visible only while it has keyboard focus. */
 .skip-link:not(:focus) {
@@ -11,9 +10,9 @@
   white-space: nowrap;
 }
 
-/* Visible focus ring for links that Bootstrap leaves unstyled. */
+/* Visible focus ring for links. */
 a:focus-visible {
-  outline: 2px solid var(--bs-primary);
+  outline: 2px solid var(--mui-palette-primary-main);
   outline-offset: 2px;
 }
 
@@ -26,7 +25,7 @@ a:focus-visible {
   }
 }
 
-/* Small layout helpers that Bootstrap utilities do not cover. */
+/* Small layout helpers (see also utilities.css). */
 .focus-target:focus {
   outline: none; /* headings that receive focus after navigation, not tab stops */
 }
@@ -124,27 +123,133 @@ a:focus-visible {
   margin: 0;
 }
 
-/* Confirm dialog (Radix behaviour, Bootstrap modal look): centered above the backdrop. */
-.dialog-box {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 1055;
-  width: calc(100% - 2rem);
-  max-width: 28rem;
-  max-height: 90dvh;
-  overflow-y: auto;
-  transform: translate(-50%, -50%);
-  /* Bootstrap defines the modal colours on .modal, which is not used here, so set them from the theme. */
-  color: var(--bs-body-color);
-  background-color: var(--bs-body-bg);
-  border: var(--bs-border-width) solid var(--bs-border-color-translucent);
-  border-radius: var(--bs-border-radius-lg);
-}
-
 /* Grid and flex containers already space children with `gap`, so drop the default block margins inside them. */
 .d-grid > :is(p, h1, h2, h3, h4, dl, ul, ol, figure, form),
 .d-flex > :is(p, h1, h2, h3, h4, dl, ul, ol, figure),
-.card-body > :is(p, h1, h2, h3, h4) {
+.MuiPaper-root > :is(p, h1, h2, h3, h4) {
   margin-bottom: 0;
+}
+
+/* Skip link look. */
+.skip-link {
+  background: var(--mui-palette-background-paper);
+  color: var(--mui-palette-primary-main);
+  padding: 0.5rem 1rem;
+  border-radius: var(--mui-shape-borderRadius);
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0.5rem;
+  z-index: 2000;
+}
+
+/* Header navigation links. */
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 900px) {
+  .nav-list {
+    flex-direction: row;
+  }
+}
+.nav-link {
+  color: inherit;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--mui-shape-borderRadius);
+  opacity: 0.85;
+}
+.nav-link:hover,
+.nav-link:focus-visible {
+  opacity: 1;
+  background: rgb(255 255 255 / 15%);
+}
+.nav-link.active {
+  opacity: 1;
+  font-weight: 600;
+  background: rgb(255 255 255 / 22%);
+}
+a.nav-link:focus-visible {
+  outline-color: #fff;
+}
+
+/* Side navigation pills (admin, account). */
+.nav-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  .nav-pills.flex-md-column {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+}
+.nav-pills .nav-link {
+  display: block;
+  color: var(--mui-palette-text-primary);
+  opacity: 1;
+}
+.nav-pills .nav-link:hover {
+  background: var(--mui-palette-action-hover);
+}
+.nav-pills .nav-link.active {
+  color: var(--mui-palette-primary-contrastText);
+  background: var(--mui-palette-primary-main);
+}
+
+/* Tables. */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table :is(th, td) {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--mui-palette-divider);
+  text-align: start;
+}
+.table th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.table-hover tbody tr:hover {
+  background: var(--mui-palette-action-hover);
+}
+.table-responsive {
+  overflow-x: auto;
+}
+.align-middle :is(th, td) {
+  vertical-align: middle;
+}
+
+/* Cart count pill in the header. */
+.count-pill {
+  background: #fff;
+  color: var(--mui-palette-primary-main);
+  border-radius: 999px;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Checkbox look, and the show/hide button inside a password field. */
+.check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--mui-palette-primary-main);
+}
+.pw-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  color: var(--mui-palette-text-secondary);
 }

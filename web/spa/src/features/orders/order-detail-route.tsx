@@ -1,9 +1,10 @@
+import Alert from '@mui/material/Alert'
 import { useQueries, useQuery, type QueryClient, type UseQueryResult } from '@tanstack/react-query'
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useParams, type LoaderFunctionArgs } from 'react-router'
 import { myOrderQuery, type MyOrder, type OrderStatus } from '@/api/orders'
 import { productQuery, type Product } from '@/api/products'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { CancelOrderDialog } from '@/features/orders/cancel-order-dialog'
 import { shortId, StatusBadge } from '@/features/orders/status-badge'
 import { formatDateTime, parseDate } from '@/lib/dates'
@@ -57,9 +58,9 @@ export function OrderDetailRoute() {
         {notFound ? (
           <p>Order not found.</p>
         ) : (
-          <div role="alert" className="alert alert-danger mb-0">
+          <Alert severity="error" role="alert">
             <p>{apiErrorMessage(error)}</p>
-          </div>
+          </Alert>
         )}
         <div className="d-flex gap-2">
           {!notFound && (
@@ -73,12 +74,9 @@ export function OrderDetailRoute() {
               {isFetching ? 'Trying again…' : 'Try again'}
             </Button>
           )}
-          <Link
-            to="/orders"
-            className={buttonVariants({ variant: notFound ? 'default' : 'outline' })}
-          >
+          <LinkButton to="/orders" variant={notFound ? 'default' : 'outline'}>
             Go to My orders
-          </Link>
+          </LinkButton>
         </div>
       </section>
     )
@@ -173,13 +171,17 @@ function OrderDetail({ order, placed }: { order: MyOrder; placed: boolean }) {
         {announcement}
       </p>
       {/* A region that is always in the page, so the text is announced; empty (and hidden) unless the order was just placed. */}
-      <p role="status" className={placed ? 'alert alert-success mb-0 small' : 'visually-hidden'}>
-        {placed ? 'Order placed. We will confirm it soon.' : ''}
-      </p>
+      {placed ? (
+        <Alert severity="success" role="status">
+          Order placed. We will confirm it soon.
+        </Alert>
+      ) : (
+        <p role="status" className="visually-hidden" />
+      )}
       {conflict && (
-        <p role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           {conflict}
-        </p>
+        </Alert>
       )}
 
       <div className="table-responsive">

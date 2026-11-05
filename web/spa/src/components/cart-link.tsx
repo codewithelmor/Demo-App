@@ -21,7 +21,7 @@ export function CartLink() {
     >
       <ShoppingCart aria-hidden="true" size={16} />
       <span aria-hidden="true">Cart</span>
-      <span aria-hidden="true" className="badge rounded-pill text-bg-light">
+      <span aria-hidden="true" className="count-pill">
         {count}
       </span>
     </NavLink>

@@ -19,9 +19,11 @@ export function SignOutButton() {
 
   return (
     <Button
-      variant="secondary"
+      variant="outline"
       size="sm"
       className="align-self-start"
+      // On the blue app bar the button takes the bar's text colour (white), as Material UI app bars do.
+      {...{ sx: { color: 'inherit', borderColor: 'currentColor' } }}
       disabled={mutation.isPending}
       aria-busy={mutation.isPending}
       onClick={() => {

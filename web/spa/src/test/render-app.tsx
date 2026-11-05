@@ -4,6 +4,7 @@ import { RouterProvider } from 'react-router'
 import { CartProvider } from '@/hooks/cart-provider'
 import { createQueryClient } from '@/app/query-client'
 import { createTestRouter } from '@/app/router'
+import { AppProviders } from '@/theme/app-providers'
 
 // Renders the real route tree (shell, guards, lazy routes) at a URL with a fresh query cache.
 export function renderApp(url: string) {
@@ -15,9 +16,11 @@ export function renderApp(url: string) {
   const router = createTestRouter(queryClient, [url])
   render(
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
+      <AppProviders>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </AppProviders>
     </QueryClientProvider>,
   )
   return { router, queryClient }

@@ -1,57 +1,60 @@
-import { Slot } from 'radix-ui'
-import type { ComponentProps } from 'react'
-import { cn } from '@/lib/utils'
+import MuiButton, { type ButtonProps as MuiButtonProps } from '@mui/material/Button'
+import type { ComponentProps, ReactNode } from 'react'
+import { Link, type LinkProps } from 'react-router'
 
 type Variant = 'default' | 'secondary' | 'success' | 'warning' | 'outline' | 'ghost' | 'destructive'
 type Size = 'default' | 'sm' | 'icon'
 
-const variantClass: Record<Variant, string> = {
-  default: 'btn-primary',
-  secondary: 'btn-secondary',
-  success: 'btn-success',
-  warning: 'btn-warning',
-  outline: 'btn-outline-secondary',
-  ghost: 'btn-link text-decoration-none',
-  destructive: 'btn-danger',
+/** Maps our variant names to Material UI `variant` + `color`. */
+const looks: Record<Variant, Pick<MuiButtonProps, 'variant' | 'color'>> = {
+  default: { variant: 'contained', color: 'primary' },
+  secondary: { variant: 'contained', color: 'secondary' },
+  success: { variant: 'contained', color: 'success' },
+  warning: { variant: 'contained', color: 'warning' },
+  outline: { variant: 'outlined', color: 'primary' },
+  ghost: { variant: 'text', color: 'primary' },
+  destructive: { variant: 'contained', color: 'error' },
 }
-const sizeClass: Record<Size, string> = {
-  default: '',
-  sm: 'btn-sm',
-  icon: 'd-inline-flex align-items-center justify-content-center px-3',
-}
-
-/**
- * Class names for each button look (Bootstrap `btn` classes). Also used on links
- * (`<Link className={buttonVariants()}>`) so a link can look like a button.
- */
-function buttonVariants({
-  variant,
-  size,
-}: { variant?: Variant | null | undefined; size?: Size | null | undefined } = {}) {
-  return cn('btn', variantClass[variant ?? 'default'], sizeClass[size ?? 'default'])
+const sizes: Record<Size, MuiButtonProps['size']> = {
+  default: 'medium',
+  sm: 'small',
+  icon: 'medium',
 }
 
-/** All normal `<button>` props, plus `variant`, `size` and `asChild`. */
-type ButtonProps = ComponentProps<'button'> & {
+interface LookProps {
   variant?: Variant | null | undefined
   size?: Size | null | undefined
-  /** When true, the button's styles and behaviour are applied to its single child element instead of a `<button>`. */
-  asChild?: boolean
+}
+
+function muiProps({ variant, size }: LookProps): MuiButtonProps {
+  return {
+    ...looks[variant ?? 'default'],
+    size: sizes[size ?? 'default'],
+    ...(size === 'icon' ? { sx: { minWidth: 0, px: 1.5 } } : {}),
+  }
 }
 
 /**
- * The standard button. Variants: `default` (main action), `secondary` (used on the navbar), `outline`, `ghost`, `destructive` (dangerous action).
- * Sizes: `default`, `sm`, `icon` (for icon-only buttons; give them an `aria-label`).
+ * The standard button (Material UI Button). Variants: `default` (main action), `secondary`, `outline`,
+ * `ghost`, `warning`, `success`, `destructive` (dangerous action). Sizes: `default`, `sm`, `icon`
+ * (icon-only buttons need an `aria-label`).
  */
-function Button({ className, variant, size, asChild = false, ...props }: ButtonProps) {
-  const Comp = asChild ? Slot.Root : 'button'
+function Button({ variant, size, ...props }: Omit<ComponentProps<'button'>, 'color'> & LookProps) {
+  return <MuiButton {...muiProps({ variant, size })} {...props} />
+}
+
+/** A router link that looks like a button: `<LinkButton to="/products" variant="outline">Back</LinkButton>`. */
+function LinkButton({
+  variant,
+  size,
+  children,
+  ...props
+}: LinkProps & LookProps & { children?: ReactNode }) {
   return (
-    <Comp
-      data-slot="button"
-      className={cn(buttonVariants({ variant, size }), className)}
-      {...props}
-    />
+    <MuiButton component={Link} {...muiProps({ variant, size })} {...(props as MuiButtonProps)}>
+      {children}
+    </MuiButton>
   )
 }
 
-export { Button, buttonVariants }
+export { Button, LinkButton }

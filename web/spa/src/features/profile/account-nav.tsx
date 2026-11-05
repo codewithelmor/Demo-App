@@ -34,7 +34,6 @@ export function AccountNav() {
   )
 }
 
-/** The page frame: the account links next to the page. */
 export function AccountLayout({ children }: { children: ReactNode }) {
   return (
     <div className="sidebar-layout">

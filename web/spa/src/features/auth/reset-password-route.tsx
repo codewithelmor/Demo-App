@@ -1,14 +1,16 @@
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
 import { useForm, useWatch } from 'react-hook-form'
-import { Link, useLoaderData, useNavigate } from 'react-router'
+import { useLoaderData, useNavigate } from 'react-router'
 import { FormAlert } from '@/components/form-alert'
 import { FormField } from '@/components/form-field'
 import { PasswordInput } from '@/components/password-input'
 import { SubmitRow } from '@/components/submit-row'
 import { TextLink } from '@/components/text-link'
-import { buttonVariants } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { resetPassword } from '@/features/auth/access-api'
 import {
@@ -47,13 +49,18 @@ export function resetPasswordLoader({ request }: { request: Request }): ResetLin
 export function ResetPasswordRoute() {
   const link = useLoaderData<ResetLink | null>()
   return (
-    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
+    <Paper
+      component="section"
+      variant="outlined"
+      className="mx-auto d-grid max-w-md gap-4"
+      sx={{ p: 2 }}
+    >
       <title>Set a new password · Orders Shop</title>
       <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Set a new password
       </h1>
       {link ? <ResetForm link={link} /> : <MissingLink />}
-    </section>
+    </Paper>
   )
 }
 
@@ -61,9 +68,7 @@ export function ResetPasswordRoute() {
 function RequestNewLink() {
   return (
     <div>
-      <Link to="/forgot-password" className={buttonVariants()}>
-        Request new link
-      </Link>
+      <LinkButton to="/forgot-password">Request new link</LinkButton>
     </div>
   )
 }
@@ -116,9 +121,9 @@ function ResetForm({ link }: { link: ResetLink }) {
   if (failure?.error.slug === 'invalid-token') {
     return (
       <>
-        <div role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           <p>This link is invalid or expired.</p>
-        </div>
+        </Alert>
         <RequestNewLink />
       </>
     )

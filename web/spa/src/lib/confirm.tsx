@@ -1,15 +1,18 @@
 /**
- * Asks the user to confirm before a form is sent, with SweetAlert2 (React flavour).
+ * Asks the user to confirm before a form is sent, with a Material UI Dialog.
  *
- * CSP note: the default `sweetalert2` bundle injects an un-nonced `<style>` tag, which the BFF's
- * `style-src` blocks. `vite.config.ts` therefore aliases `sweetalert2` to the build without that
- * injection, and `main.tsx` loads `sweetalert2/dist/sweetalert2.min.css` as a normal stylesheet.
- * Buttons use Bootstrap classes (`buttonsStyling: false`), so the dialog matches the Lumen theme.
+ * The dialog is rendered into its own React root appended to `<body>`, so any code can `await` it
+ * without a component in the tree. It is wrapped in the same theme and nonce-carrying emotion cache
+ * as the app (`AppProviders`), so the CSP allows its styles.
  */
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-
-const ReactSwal = withReactContent(Swal)
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import { createRoot } from 'react-dom/client'
+import { AppProviders } from '@/theme/app-providers'
 
 /** Texts of one confirmation. */
 interface ConfirmOptions {
@@ -25,25 +28,59 @@ interface ConfirmOptions {
  * Shows the dialog and resolves `true` when the user confirms, `false` when they cancel,
  * press Escape or click outside it. Focus returns to where it was when the dialog closes.
  */
-export async function confirmSubmit({
-  title,
-  text,
-  confirmLabel,
-}: ConfirmOptions): Promise<boolean> {
-  const result = await ReactSwal.fire({
-    title,
-    ...(text === undefined ? {} : { text }),
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: confirmLabel,
-    cancelButtonText: 'Cancel',
-    reverseButtons: true,
-    focusCancel: false,
-    buttonsStyling: false,
-    customClass: {
-      confirmButton: 'btn btn-primary ms-2',
-      cancelButton: 'btn btn-outline-secondary',
-    },
+export function confirmSubmit({ title, text, confirmLabel }: ConfirmOptions): Promise<boolean> {
+  return new Promise((resolve) => {
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const root = createRoot(host)
+
+    const view = (open: boolean, answer: (value: boolean) => void) => (
+      <AppProviders>
+        <Dialog
+          open={open}
+          onClose={() => {
+            answer(false)
+          }}
+          aria-labelledby="confirm-title"
+        >
+          <DialogTitle id="confirm-title">{title}</DialogTitle>
+          {text !== undefined && (
+            <DialogContent>
+              <DialogContentText>{text}</DialogContentText>
+            </DialogContent>
+          )}
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button
+              color="primary"
+              variant="outlined"
+              onClick={() => {
+                answer(false)
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                answer(true)
+              }}
+            >
+              {confirmLabel}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </AppProviders>
+    )
+
+    const answer = (value: boolean) => {
+      resolve(value)
+      root.render(view(false, () => undefined))
+      // Let the closing animation run, then remove the extra root.
+      setTimeout(() => {
+        root.unmount()
+        host.remove()
+      }, 400)
+    }
+    root.render(view(true, answer))
   })
-  return result.isConfirmed
 }

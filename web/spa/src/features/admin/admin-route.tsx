@@ -3,6 +3,8 @@
  * This module is its own chunk (the router loads it with lazy()), and nothing outside features/admin imports it.
  * The two reports load side by side; the API allows 4 report calls at once (NFR-F27).
  */
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
 import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
@@ -22,22 +24,22 @@ export function adminLoader(queryClient: QueryClient) {
 /** A titled number box. */
 function Stat({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="card card-body shadow-sm p-3">
+    <Paper component="div" variant="outlined" sx={{ p: 2 }}>
       <dt className="small text-body-secondary">{label}</dt>
       <dd className="mt-1 fs-3 fw-semibold">{children}</dd>
-    </div>
+    </Paper>
   )
 }
 
 /** Shows a failed report with a retry button, so one failing report does not hide the other. */
 function ReportError({ error, retry, busy }: { error: unknown; retry: () => void; busy: boolean }) {
   return (
-    <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+    <Alert severity="error" role="alert" className="gap-2">
       <p>{apiErrorMessage(error)}</p>
       <Button variant="outline" disabled={busy} onClick={retry}>
         {busy ? 'Trying again…' : 'Try again'}
       </Button>
-    </div>
+    </Alert>
   )
 }
 

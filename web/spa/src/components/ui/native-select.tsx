@@ -1,15 +1,12 @@
+import { styled } from '@mui/material/styles'
 import type { ComponentProps } from 'react'
-import { cn } from '@/lib/utils'
+import { field } from '@/components/ui/input'
 
-/** A dropdown using the browser's built-in `<select>` (Bootstrap `form-select`). */
-function NativeSelect({ className, ...props }: ComponentProps<'select'>) {
-  return (
-    <select
-      data-slot="native-select"
-      className={cn('form-select', props['aria-invalid'] && 'is-invalid', className)}
-      {...props}
-    />
-  )
+const StyledSelect = styled('select')(field)
+
+/** A dropdown using the browser's built-in `<select>`, styled like the text box. */
+function NativeSelect(props: ComponentProps<'select'>) {
+  return <StyledSelect data-slot="native-select" {...props} />
 }
 
 export { NativeSelect }

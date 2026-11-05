@@ -1,3 +1,5 @@
+import FormHelperText from '@mui/material/FormHelperText'
+import FormLabel from '@mui/material/FormLabel'
 import { useId, type ReactNode } from 'react'
 
 /**
@@ -12,7 +14,7 @@ export interface FieldA11yProps {
 
 /** Props for {@link FormField}. */
 interface FormFieldProps {
-  /** Visible text of the floating label. */
+  /** Visible label text, shown above the control. */
   label: string
   /** Error text to show under the field. Omit when the field is valid. */
   error?: string | undefined
@@ -20,16 +22,14 @@ interface FormFieldProps {
   hint?: string
   /** Draws the actual control. Receives the id and `aria-*` props to put on it. */
   render: (props: FieldA11yProps) => ReactNode
-  /** Extra Bootstrap classes for the outer element, for example `flex-grow-1`. */
+  /** Extra utility classes for the outer element, for example `flex-grow-1`. */
   className?: string
 }
 
 /**
- * One floating label, one control, an optional hint, and an error that is linked to the control,
+ * One label, one control, an optional hint, and an error that is linked to the control,
  * so screen readers read the error when the field gets focus. It is not a live region itself: a form-level
  * alert or the error summary announces the failure once, and focus moves to the first invalid field.
- *
- * Bootstrap floating labels need the control first and the label after it, inside `.form-floating`.
  *
  * Example: `<FormField label="Email" error={errors.email?.message} render={(a11y) => <Input {...a11y} />} />`
  */
@@ -46,19 +46,19 @@ export function FormField({ label, error, hint, render, className }: FormFieldPr
 
   return (
     <div className={className}>
-      <div className="form-floating">
-        {control}
-        <label htmlFor={id}>{label}</label>
-      </div>
-      {hint && (
-        <div id={hintId} className="form-text">
-          {hint}
-        </div>
-      )}
+      <FormLabel
+        htmlFor={id}
+        error={Boolean(error)}
+        sx={{ display: 'block', mb: 0.5, fontSize: '0.875rem' }}
+      >
+        {label}
+      </FormLabel>
+      <div className="position-relative">{control}</div>
+      {hint && <FormHelperText id={hintId}>{hint}</FormHelperText>}
       {error && (
-        <div id={errorId} className="invalid-feedback d-block fw-semibold">
+        <FormHelperText id={errorId} error sx={{ fontWeight: 600 }}>
           {error}
-        </div>
+        </FormHelperText>
       )}
     </div>
   )

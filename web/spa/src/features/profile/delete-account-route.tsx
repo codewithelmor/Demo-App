@@ -1,7 +1,8 @@
+import FormHelperText from '@mui/material/FormHelperText'
+import Alert from '@mui/material/Alert'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { useId, useState } from 'react'
-import { cn } from '@/lib/utils'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router'
 import { FormAlert } from '@/components/form-alert'
@@ -14,7 +15,7 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { AccountLayout } from '@/features/profile/account-nav'
 import { eraseAccount } from '@/features/profile/profile-api'
 import { deleteAccountSchema, type DeleteAccountValues } from '@/features/profile/profile-schemas'
@@ -77,15 +78,12 @@ export function DeleteAccountRoute() {
       </section>
 
       {openOrders ? (
-        <div
-          role="alert"
-          className="alert alert-danger d-grid justify-items-start gap-2 mb-0 small"
-        >
+        <Alert severity="error" role="alert" className="gap-2">
           <p>Cancel or finish your open orders first.</p>
           <Link to="/orders" className="text-decoration-underline">
             Go to My orders
           </Link>
-        </div>
+        </Alert>
       ) : (
         <FormAlert failure={failure} />
       )}
@@ -112,23 +110,21 @@ export function DeleteAccountRoute() {
           )}
         />
         <div>
-          <div className="form-check">
+          <div className="d-flex align-items-center gap-2">
             <input
               id={understoodId}
               type="checkbox"
-              className={cn('form-check-input', errors.understood && 'is-invalid')}
+              className="check-input"
               aria-invalid={errors.understood ? true : undefined}
               aria-describedby={errors.understood ? `${understoodId}-error` : undefined}
               {...register('understood')}
             />
-            <label htmlFor={understoodId} className="form-check-label">
-              I understand this cannot be undone.
-            </label>
+            <label htmlFor={understoodId}>I understand this cannot be undone.</label>
           </div>
           {errors.understood && (
-            <div id={`${understoodId}-error`} className="invalid-feedback d-block fw-semibold">
+            <FormHelperText id={`${understoodId}-error`} error sx={{ fontWeight: 600 }}>
               {errors.understood.message}
-            </div>
+            </FormHelperText>
           )}
         </div>
         <div className="d-flex flex-wrap align-items-center gap-2">
@@ -140,9 +136,9 @@ export function DeleteAccountRoute() {
               You can try again in {secondsLeft} s
             </span>
           )}
-          <Link to="/account" className={buttonVariants({ variant: 'outline' })}>
+          <LinkButton to="/account" variant="outline">
             Keep my account
-          </Link>
+          </LinkButton>
         </div>
       </form>
 

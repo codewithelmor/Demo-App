@@ -86,7 +86,7 @@ The BFF limits per IP (anonymous 60/min, auth 10/min), so the compose file raise
 
 ## Accepted risks
 
-- **Bootstrap 5.3.8 + Bootswatch Lumen (CSS only):** imported in `src/main.tsx`; no Bootstrap JavaScript is used (Radix handles dialog behaviour). The theme's Google Fonts `@import` is stripped by `stripRemoteFonts` in `vite.config.ts` because the CSP allows `style-src 'self'` only, so Lumen uses its fallback font stack. Form fields use Bootstrap floating labels through `FormField`.
+- **Material UI (`@mui/material`, Emotion):** theme in `src/theme/theme.ts`, providers in `src/theme/app-providers.tsx` (the Emotion cache carries the CSP nonce, so `style-src` stays nonce-based). Fonts are the system stack because the CSP allows `'self'` only. Alerts are MUI `Alert`, toasts are a Snackbar (`useToast()` in `src/theme/toast.tsx`), and confirmations are a MUI Dialog (`src/lib/confirm.tsx`). Radix still drives the alert-dialog behaviour. `src/styles/utilities.css` holds a few plain layout helpers.
 - **CSP and Radix dialogs (finding L-3, closed):** Radix modals inject a scroll-lock `<style>`; the BFF sends a
   per-response nonce in `style-src` and `src/app/csp-nonce.ts` gives it to Radix. Zod's `new Function` probe also
   tripped `script-src`; `src/lib/zod.ts` turns the JIT off and is the only runtime import of `zod` (a unit test

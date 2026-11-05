@@ -1,6 +1,5 @@
 /** The "you do not have access" page (HTTP 403 equivalent). */
-import { Link } from 'react-router'
-import { buttonVariants } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
 
 /**
  * SY-2: shown in place on guarded routes when a signed-in user has the wrong role.
@@ -18,9 +17,7 @@ export function ForbiddenPage() {
       </h1>
       <p>This area is for administrators.</p>
       <div>
-        <Link to="/products" className={buttonVariants()}>
-          Go to Products
-        </Link>
+        <LinkButton to="/products">Go to Products</LinkButton>
       </div>
     </section>
   )

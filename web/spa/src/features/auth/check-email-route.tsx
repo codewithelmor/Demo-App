@@ -1,6 +1,6 @@
-import { Link } from 'react-router'
+import Paper from '@mui/material/Paper'
 import { TextLink } from '@/components/text-link'
-import { buttonVariants } from '@/components/ui/button'
+import { LinkButton } from '@/components/ui/button'
 
 /**
  * AN-4: the page shown after registering. The email is neither shown nor stored. The text is the same for
@@ -9,7 +9,12 @@ import { buttonVariants } from '@/components/ui/button'
  */
 export function CheckEmailRoute() {
   return (
-    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-3">
+    <Paper
+      component="section"
+      variant="outlined"
+      className="mx-auto d-grid max-w-md gap-3"
+      sx={{ p: 2 }}
+    >
       <title>Check your email · Orders Shop</title>
       <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Check your email
@@ -22,15 +27,15 @@ export function CheckEmailRoute() {
         Did not get it? <TextLink to="/resend-confirmation">Resend email</TextLink>
       </p>
       <div>
-        <Link to="/sign-in" className={buttonVariants({ variant: 'outline' })}>
+        <LinkButton to="/sign-in" variant="outline">
           Back to sign in
-        </Link>
+        </LinkButton>
       </div>
       {import.meta.env.DEV && (
         <p className="small text-body-secondary">
           Local setup: find the link with <code>docker compose logs api</code>.
         </p>
       )}
-    </section>
+    </Paper>
   )
 }

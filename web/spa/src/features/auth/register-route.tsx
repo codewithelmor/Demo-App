@@ -1,3 +1,5 @@
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
@@ -102,7 +104,12 @@ export function RegisterRoute() {
     : `At least ${String(PASSWORD_MIN)} characters. A short sentence works well. Spaces are allowed.`
 
   return (
-    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
+    <Paper
+      component="section"
+      variant="outlined"
+      className="mx-auto d-grid max-w-md gap-4"
+      sx={{ p: 2 }}
+    >
       <title>Create your account · Orders Shop</title>
       <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Create your account
@@ -112,7 +119,7 @@ export function RegisterRoute() {
       <FormAlert failure={failure} />
 
       {summary.length > 0 && (
-        <div role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           <p className="fw-medium">
             Fix {summary.length} {summary.length === 1 ? 'problem' : 'problems'} to continue
           </p>
@@ -131,7 +138,7 @@ export function RegisterRoute() {
               </li>
             ))}
           </ul>
-        </div>
+        </Alert>
       )}
 
       <form
@@ -191,6 +198,6 @@ export function RegisterRoute() {
       <p className="small">
         Already have an account? <TextLink to="/sign-in">Sign in</TextLink>
       </p>
-    </section>
+    </Paper>
   )
 }

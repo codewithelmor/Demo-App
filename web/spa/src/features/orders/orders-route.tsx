@@ -1,6 +1,8 @@
+import Skeleton from '@mui/material/Skeleton'
+import Alert from '@mui/material/Alert'
 import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { Link, useSearchParams, type LoaderFunctionArgs } from 'react-router'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { FormField } from '@/components/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
 import { apiErrorMessage } from '@/lib/error-message'
@@ -117,16 +119,14 @@ export function OrdersRoute() {
           </p>
           <div aria-hidden="true" className="d-grid gap-2">
             {Array.from({ length: 5 }, (_, index) => (
-              <div key={index} className="placeholder-glow">
-                <span className="placeholder w-100 h-10 rounded" />
-              </div>
+              <Skeleton key={index} variant="rounded" height={40} />
             ))}
           </div>
         </>
       )}
 
       {isError && (
-        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+        <Alert severity="error" role="alert" className="gap-2">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -137,7 +137,7 @@ export function OrdersRoute() {
           >
             {isFetching ? 'Trying again…' : 'Try again'}
           </Button>
-        </div>
+        </Alert>
       )}
 
       {data && data.items.length === 0 && (
@@ -145,9 +145,9 @@ export function OrdersRoute() {
           {params.page > 1 ? (
             <>
               <p>No orders on this page.</p>
-              <Link to={pageLink(1)} className={buttonVariants({ variant: 'outline' })}>
+              <LinkButton to={pageLink(1)} variant="outline">
                 Go to page 1
-              </Link>
+              </LinkButton>
             </>
           ) : filtersActive ? (
             <>
@@ -159,9 +159,7 @@ export function OrdersRoute() {
           ) : (
             <>
               <p>You have not placed any orders yet.</p>
-              <Link to="/products" className={buttonVariants()}>
-                Browse products
-              </Link>
+              <LinkButton to="/products">Browse products</LinkButton>
             </>
           )}
         </div>
@@ -214,17 +212,17 @@ export function OrdersRoute() {
       {data && data.totalCount > 0 && (
         <nav aria-label="Pagination" className="d-flex align-items-center gap-2">
           {params.page > 1 ? (
-            <Link to={pageLink(params.page - 1)} className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to={pageLink(params.page - 1)} variant="outline">
               Previous
-            </Link>
+            </LinkButton>
           ) : null}
           <span className="small">
             Page {params.page} of {totalPages}
           </span>
           {params.page < totalPages ? (
-            <Link to={pageLink(params.page + 1)} className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to={pageLink(params.page + 1)} variant="outline">
               Next
-            </Link>
+            </LinkButton>
           ) : null}
         </nav>
       )}

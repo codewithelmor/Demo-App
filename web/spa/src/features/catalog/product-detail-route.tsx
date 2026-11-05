@@ -1,9 +1,10 @@
+import Alert from '@mui/material/Alert'
 import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Link, useLocation, useParams, type LoaderFunctionArgs } from 'react-router'
 import { QuantityInput } from '@/components/quantity-input'
 import { Badge } from '@/components/ui/badge'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { productQuery, type Product } from '@/api/products'
 import { apiErrorMessage } from '@/lib/error-message'
 import { addMessage, useCart } from '@/hooks/use-cart'
@@ -68,9 +69,9 @@ export function ProductDetailRoute() {
         {notFound ? (
           <p>Product not found. It may have been removed.</p>
         ) : (
-          <div role="alert" className="alert alert-danger mb-0">
+          <Alert severity="error" role="alert">
             <p>{apiErrorMessage(error)}</p>
-          </div>
+          </Alert>
         )}
         <div className="d-flex gap-2">
           {!notFound && (
@@ -84,9 +85,9 @@ export function ProductDetailRoute() {
               {isFetching ? 'Trying again…' : 'Try again'}
             </Button>
           )}
-          <Link to={back} className={buttonVariants({ variant: notFound ? 'default' : 'outline' })}>
+          <LinkButton to={back} variant={notFound ? 'default' : 'outline'}>
             Back to products
-          </Link>
+          </LinkButton>
         </div>
       </section>
     )
@@ -152,9 +153,9 @@ function Detail({ product }: { product: Product }) {
         {notice?.ok ? notice.text : ''}
       </p>
       {notice && !notice.ok && (
-        <p role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           {notice.text}
-        </p>
+        </Alert>
       )}
       {inCart > 0 && (
         <p>

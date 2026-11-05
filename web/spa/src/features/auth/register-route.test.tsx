@@ -186,7 +186,7 @@ describe('register page', () => {
 
     const busy = await screen.findByRole('button', { name: 'Creating account…' })
     expect(busy).toBeDisabled()
-    await user.click(busy)
+    await userEvent.setup({ pointerEventsCheck: 0 }).click(busy)
     release()
     await screen.findByRole('heading', { level: 1, name: 'Check your email' })
     expect(calls).toBe(1)

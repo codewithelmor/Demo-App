@@ -1,4 +1,11 @@
 /** The frame around every page: skip link, header with navigation, and the main content area. */
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import IconButton from '@mui/material/IconButton'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import { Menu } from 'lucide-react'
 import { useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigation } from 'react-router'
 import { CartLink } from '@/components/cart-link'
@@ -22,76 +29,97 @@ export function RootLayout() {
   useFocusHeadingOnNavigate()
   const navigation = useNavigation()
   const user = useSession()
-  // Whether the menu is open on small screens (it is always visible from the lg breakpoint up).
+  // Whether the menu is open on small screens (it is always visible from the md breakpoint up).
   const { pathname } = useLocation()
   const [openOn, setOpenOn] = useState<string | undefined>(undefined)
   const open = openOn === pathname
 
   return (
-    <div className="min-vh-100">
-      <a href="#main" className="skip-link btn btn-light position-absolute top-0 start-0 m-2">
+    <Box sx={{ minHeight: '100vh' }}>
+      <a href="#main" className="skip-link">
         Skip to main content
       </a>
-      <header>
-        <nav aria-label="Main" className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-          <div className="container-fluid">
-            <span className="navbar-brand fw-semibold">Orders Shop</span>
-            {user && (
-              <>
-                <button
-                  type="button"
-                  className="navbar-toggler"
-                  aria-controls="navbar-menu"
-                  aria-expanded={open}
-                  aria-label="Toggle navigation"
-                  onClick={() => {
-                    setOpenOn(open ? undefined : pathname)
-                  }}
-                >
-                  <span className="navbar-toggler-icon" />
-                </button>
-                {/* Bootstrap's collapse JavaScript is not loaded; React toggles the show class. The menu closes by itself when the page changes. */}
-                <div id="navbar-menu" className={cn('collapse navbar-collapse', open && 'show')}>
-                  <ul className="navbar-nav me-auto">
-                    <li className="nav-item">
-                      <NavLink to="/products" className={navLinkClass}>
-                        Products
+      <AppBar position="static" component="header">
+        <Toolbar
+          component="nav"
+          aria-label="Main"
+          sx={{ flexWrap: 'wrap', gap: 1, py: { xs: 1, md: 0 } }}
+        >
+          <Typography variant="h6" component="span" sx={{ mr: 2 }}>
+            Orders Shop
+          </Typography>
+          {user && (
+            <>
+              <IconButton
+                color="inherit"
+                aria-controls="navbar-menu"
+                aria-expanded={open}
+                aria-label="Toggle navigation"
+                sx={{ display: { md: 'none' }, ml: 'auto' }}
+                onClick={() => {
+                  setOpenOn(open ? undefined : pathname)
+                }}
+              >
+                <Menu aria-hidden="true" />
+              </IconButton>
+              <Box
+                id="navbar-menu"
+                sx={{
+                  display: { xs: open ? 'flex' : 'none', md: 'flex' },
+                  flexDirection: { xs: 'column', md: 'row' },
+                  alignItems: { xs: 'stretch', md: 'center' },
+                  flexGrow: 1,
+                  gap: 1,
+                  width: { xs: '100%', md: 'auto' },
+                }}
+              >
+                <ul className="nav-list me-auto">
+                  <li>
+                    <NavLink to="/products" className={navLinkClass}>
+                      Products
+                    </NavLink>
+                  </li>
+                  {user.roles.includes('Customer') && (
+                    <li>
+                      <NavLink to="/orders" className={navLinkClass}>
+                        My orders
                       </NavLink>
                     </li>
-                    {user.roles.includes('Customer') && (
-                      <li className="nav-item">
-                        <NavLink to="/orders" className={navLinkClass}>
-                          My orders
-                        </NavLink>
-                      </li>
-                    )}
-                    {user.roles.includes('Admin') && (
-                      <li className="nav-item">
-                        <NavLink to="/admin" className={navLinkClass}>
-                          Back office
-                        </NavLink>
-                      </li>
-                    )}
-                  </ul>
-                  <div className="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
-                    <CartLink />
-                    {user.roles.includes('Customer') && (
-                      <NavLink to="/account" className={navLinkClass}>
-                        My account
+                  )}
+                  {user.roles.includes('Admin') && (
+                    <li>
+                      <NavLink to="/admin" className={navLinkClass}>
+                        Back office
                       </NavLink>
-                    )}
-                    <span className="navbar-text">{user.email}</span>
-                    <SignOutButton />
-                  </div>
+                    </li>
+                  )}
+                </ul>
+                <div className="d-flex flex-column flex-md-row align-items-md-center gap-2">
+                  <CartLink />
+                  {user.roles.includes('Customer') && (
+                    <NavLink to="/account" className={navLinkClass}>
+                      My account
+                    </NavLink>
+                  )}
+                  <Typography variant="body2" component="span" sx={{ opacity: 0.85 }}>
+                    {user.email}
+                  </Typography>
+                  <SignOutButton />
                 </div>
-              </>
-            )}
-          </div>
-        </nav>
-      </header>
-      <main id="main" className="container py-4" aria-busy={navigation.state === 'loading'}>
+              </Box>
+            </>
+          )}
+        </Toolbar>
+      </AppBar>
+      <Container
+        component="main"
+        id="main"
+        maxWidth="xl"
+        sx={{ py: 4 }}
+        aria-busy={navigation.state === 'loading'}
+      >
         <Outlet />
-      </main>
-    </div>
+      </Container>
+    </Box>
   )
 }

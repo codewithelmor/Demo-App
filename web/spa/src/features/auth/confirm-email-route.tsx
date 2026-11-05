@@ -1,6 +1,8 @@
-import { Link, useLoaderData, useRevalidator, type LoaderFunctionArgs } from 'react-router'
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
+import { useLoaderData, useRevalidator, type LoaderFunctionArgs } from 'react-router'
 import { TextLink } from '@/components/text-link'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { confirmEmail } from '@/features/auth/access-api'
 import { ResendConfirmationForm } from '@/features/auth/resend-confirmation-form'
 import { useCountdown } from '@/hooks/use-countdown'
@@ -53,12 +55,17 @@ export async function confirmEmailLoader({ request }: LoaderFunctionArgs): Promi
 export function ConfirmEmailRoute() {
   const outcome = useLoaderData<ConfirmOutcome>()
   return (
-    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-3">
+    <Paper
+      component="section"
+      variant="outlined"
+      className="mx-auto d-grid max-w-md gap-3"
+      sx={{ p: 2 }}
+    >
       <title>Confirm your email · Orders Shop</title>
       {outcome.kind === 'confirmed' && <Confirmed />}
       {outcome.kind === 'invalid' && <InvalidLink />}
       {outcome.kind === 'failed' && <Failed error={outcome.error} />}
-    </section>
+    </Paper>
   )
 }
 
@@ -71,9 +78,7 @@ function Confirmed() {
       </h1>
       <p role="status">Email confirmed. You can now sign in.</p>
       <div>
-        <Link to="/sign-in" className={buttonVariants()}>
-          Sign in
-        </Link>
+        <LinkButton to="/sign-in">Sign in</LinkButton>
       </div>
     </>
   )
@@ -105,10 +110,10 @@ function Failed({ error }: { error: ApiError }) {
       <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         We could not confirm your email
       </h1>
-      <div role="alert" className="alert alert-danger mb-0 small">
+      <Alert severity="error" role="alert">
         <p>{messageFor(error)}</p>
         {reference && <p className="mt-1 text-body-secondary">Reference: {reference}</p>}
-      </div>
+      </Alert>
       <div className="d-flex flex-wrap align-items-center gap-2">
         <Button
           type="button"

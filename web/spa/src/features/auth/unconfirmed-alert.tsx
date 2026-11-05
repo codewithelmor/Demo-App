@@ -1,3 +1,4 @@
+import Alert from '@mui/material/Alert'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -34,7 +35,7 @@ export function UnconfirmedAlert({ email, message }: { email: string; message: s
   })
 
   return (
-    <div role="alert" className="alert alert-secondary d-grid justify-items-start gap-2 mb-0 small">
+    <Alert severity="info" role="alert" className="gap-2">
       {sent ? (
         // Focus moves here: the button that had it is gone.
         <p
@@ -65,6 +66,6 @@ export function UnconfirmedAlert({ email, message }: { email: string; message: s
           </Button>
         </>
       )}
-    </div>
+    </Alert>
   )
 }

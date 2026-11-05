@@ -24,10 +24,16 @@ interface NonceTarget {
  * @param doc    The document to read the meta tag from. Defaults to the real page; tests pass a fake one.
  * @param target Where to store the nonce. Defaults to `globalThis`; tests pass a plain object.
  */
+/** Returns the real nonce from the meta tag, or `undefined` when there is none (dev server, tests). */
+export function readCspNonce(doc: Document = document): string | undefined {
+  const value = doc.querySelector('meta[name="csp-nonce"]')?.getAttribute('content')?.trim()
+  return value && value !== PLACEHOLDER ? value : undefined
+}
+
 export function applyCspNonce(doc: Document = document, target?: NonceTarget): void {
   const holder: NonceTarget = target ?? (globalThis as NonceTarget)
-  const value = doc.querySelector('meta[name="csp-nonce"]')?.getAttribute('content')?.trim()
-  if (value && value !== PLACEHOLDER) {
+  const value = readCspNonce(doc)
+  if (value) {
     holder.__webpack_nonce__ = value
   }
 }

@@ -1,9 +1,9 @@
 /** The error screen React Router shows when a page or its data loader fails. */
 import { useEffect } from 'react'
-import { isRouteErrorResponse, Link, useRevalidator, useRouteError } from 'react-router'
+import { isRouteErrorResponse, useRevalidator, useRouteError } from 'react-router'
 import { ForbiddenPage } from '@/app/forbidden-page'
 import { NotFoundPage } from '@/app/not-found-page'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import { ApiError } from '@/lib/problem-details'
 import { messageFor, referenceFor } from '@/lib/problem-messages'
 import { reportError } from '@/lib/report-error'
@@ -68,9 +68,9 @@ export function RouteError() {
         >
           Try again
         </Button>
-        <Link to="/" className={buttonVariants({ variant: 'outline' })}>
+        <LinkButton to="/" variant="outline">
           Go to home
-        </Link>
+        </LinkButton>
       </div>
     </section>
   )

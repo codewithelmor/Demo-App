@@ -20,5 +20,5 @@ afterAll(() => {
   server.close()
 })
 
-// The real dialog is SweetAlert2 in the DOM; tests confirm automatically. confirm.test.tsx imports the real module.
+// The real dialog is a Material UI Dialog in its own root; tests confirm automatically. confirm.test.tsx imports the real module.
 vi.mock('@/lib/confirm', () => ({ confirmSubmit: vi.fn(() => Promise.resolve(true)) }))

@@ -1,24 +1,26 @@
+import Chip from '@mui/material/Chip'
 import type { ComponentProps } from 'react'
-import { cn } from '@/lib/utils'
 
-/** Looks of a badge, mapped to Bootstrap classes. */
+/** Looks of a badge: `default` (filled), `outline` (default), `muted` (grey). */
 const variants = {
-  default: 'text-bg-primary',
-  outline: 'border text-body bg-body',
-  muted: 'text-bg-light border',
+  default: { variant: 'filled', color: 'primary' },
+  outline: { variant: 'outlined', color: 'default' },
+  muted: { variant: 'filled', color: 'default' },
 } as const
 
-/** A small label for a status or a count. Variants: `default` (filled), `outline` (default), `muted` (grey). */
+/** A small label for a status or a count (Material UI Chip). */
 function Badge({
-  className,
   variant = 'outline',
-  ...props
-}: ComponentProps<'span'> & { variant?: keyof typeof variants | null | undefined }) {
+  children,
+}: Omit<ComponentProps<'span'>, 'color'> & { variant?: keyof typeof variants | null | undefined }) {
+  const look = variants[variant ?? 'outline']
   return (
-    <span
-      data-slot="badge"
-      className={cn('badge fw-semibold', variants[variant ?? 'outline'], className)}
-      {...props}
+    <Chip
+      size="small"
+      label={children}
+      variant={look.variant}
+      color={look.color}
+      sx={{ fontWeight: 600 }}
     />
   )
 }

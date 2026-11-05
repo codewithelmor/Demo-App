@@ -1,3 +1,4 @@
+import Paper from '@mui/material/Paper'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { confirmSubmit } from '@/lib/confirm'
 import { useMutation } from '@tanstack/react-query'
@@ -57,7 +58,12 @@ export function ForgotPasswordRoute() {
   }
 
   return (
-    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
+    <Paper
+      component="section"
+      variant="outlined"
+      className="mx-auto d-grid max-w-md gap-4"
+      sx={{ p: 2 }}
+    >
       <title>Reset your password · Orders Shop</title>
       <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Reset your password
@@ -93,6 +99,6 @@ export function ForgotPasswordRoute() {
       <p>
         <TextLink to="/sign-in">Back to sign in</TextLink>
       </p>
-    </section>
+    </Paper>
   )
 }

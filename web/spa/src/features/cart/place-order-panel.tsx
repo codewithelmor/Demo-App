@@ -1,3 +1,5 @@
+import { useToast } from '@/theme/toast'
+import Alert from '@mui/material/Alert'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { confirmSubmit } from '@/lib/confirm'
 import { useState, type ReactNode } from 'react'
@@ -52,9 +54,11 @@ export function PlaceOrderPanel({ lines, blockedReason, onConflicts }: PlaceOrde
   const rateLimited = failure?.status === 429 ? failure : undefined
   const secondsLeft = useCountdown(rateLimited, rateLimited?.retryAfterSeconds ?? 0)
 
+  const toast = useToast()
   const mutation = useMutation({
     mutationFn: placeOrder,
     onSuccess: async (order) => {
+      toast.success('Order placed.')
       // The order exists now: show it and empty the cart at once. Nothing here waits for the network, so a
       // closed tab or a stalled refresh cannot leave the cart full and invite a second order (no Idempotency-Key).
       queryClient.setQueryData(orderKeys.detail(order.id), order)
@@ -158,9 +162,9 @@ function FailureAlert({ error }: { error: ApiError }) {
   }
 
   return (
-    <div role="alert" className="alert alert-danger mb-0 small">
+    <Alert severity="error" role="alert">
       {body}
       {reference && <p className="mt-1 text-body-secondary">Reference: {reference}</p>}
-    </div>
+    </Alert>
   )
 }

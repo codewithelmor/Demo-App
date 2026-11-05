@@ -1,3 +1,5 @@
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -105,16 +107,21 @@ export function SignInRoute() {
   const reference = formError ? referenceFor(formError) : undefined
 
   return (
-    <section className="card card-body shadow-sm mx-auto d-grid max-w-md gap-4">
+    <Paper
+      component="section"
+      variant="outlined"
+      className="mx-auto d-grid max-w-md gap-4"
+      sx={{ p: 2 }}
+    >
       <title>Sign in · Orders Shop</title>
       <h1 tabIndex={-1} className="fs-3 fw-semibold focus-target">
         Sign in
       </h1>
 
       {reasonMessage && (
-        <p role="status" className="alert alert-info mb-0 small">
+        <Alert severity="info" role="status">
           {reasonMessage}
-        </p>
+        </Alert>
       )}
 
       {formError && unconfirmedEmail !== undefined && (
@@ -122,10 +129,10 @@ export function SignInRoute() {
       )}
 
       {formError && unconfirmedEmail === undefined && (
-        <div role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           <p>{locked ? rateLimitMessage(secondsLeft) : messageFor(formError)}</p>
           {reference && <p className="mt-1 text-body-secondary">Reference: {reference}</p>}
-        </div>
+        </Alert>
       )}
 
       <form
@@ -177,6 +184,6 @@ export function SignInRoute() {
           <TextLink to="/resend-confirmation">Resend it</TextLink>
         </p>
       </div>
-    </section>
+    </Paper>
   )
 }

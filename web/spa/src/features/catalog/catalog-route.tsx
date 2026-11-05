@@ -1,10 +1,12 @@
+import Skeleton from '@mui/material/Skeleton'
+import Alert from '@mui/material/Alert'
 import { useQuery, type QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { Link, useLocation, useSearchParams, type LoaderFunctionArgs } from 'react-router'
+import { useLocation, useSearchParams, type LoaderFunctionArgs } from 'react-router'
 import { SearchBox } from '@/components/search-box'
 import { FormField } from '@/components/form-field'
 import { NativeSelect } from '@/components/ui/native-select'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, LinkButton } from '@/components/ui/button'
 import type { Product } from '@/api/products'
 import { productsQuery } from '@/features/catalog/catalog-api'
 import { apiErrorMessage } from '@/lib/error-message'
@@ -163,9 +165,9 @@ export function CatalogRoute() {
         {notice?.kind === 'status' ? <span key={notice.id}>{notice.text}</span> : null}
       </p>
       {notice?.kind === 'alert' && (
-        <p role="alert" className="alert alert-danger mb-0 small">
+        <Alert severity="error" role="alert">
           {notice.text}
-        </p>
+        </Alert>
       )}
 
       {isPending && (
@@ -175,8 +177,8 @@ export function CatalogRoute() {
           </p>
           <ul aria-hidden="true" className="card-grid list-unstyled mb-0 p-0">
             {Array.from({ length: 8 }, (_, index) => (
-              <li key={index} className="h-40 placeholder-glow">
-                <span className="placeholder w-100 h-100 rounded-3" />
+              <li key={index}>
+                <Skeleton variant="rounded" height={160} />
               </li>
             ))}
           </ul>
@@ -184,7 +186,7 @@ export function CatalogRoute() {
       )}
 
       {isError && (
-        <div role="alert" className="alert alert-danger d-grid justify-items-start gap-2 mb-0">
+        <Alert severity="error" role="alert" className="gap-2">
           <p>{apiErrorMessage(error)}</p>
           <Button
             variant="outline"
@@ -195,7 +197,7 @@ export function CatalogRoute() {
           >
             {isFetching ? 'Trying again…' : 'Try again'}
           </Button>
-        </div>
+        </Alert>
       )}
 
       {data && data.items.length === 0 && (
@@ -203,9 +205,9 @@ export function CatalogRoute() {
           {params.page > 1 ? (
             <>
               <p>No products on this page.</p>
-              <Link to={pageLink(1)} className={buttonVariants({ variant: 'outline' })}>
+              <LinkButton to={pageLink(1)} variant="outline">
                 Go to page 1
-              </Link>
+              </LinkButton>
             </>
           ) : filtersActive ? (
             <>
@@ -237,17 +239,17 @@ export function CatalogRoute() {
       {data && data.totalCount > 0 && (
         <nav aria-label="Pagination" className="d-flex align-items-center gap-2">
           {params.page > 1 ? (
-            <Link to={pageLink(params.page - 1)} className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to={pageLink(params.page - 1)} variant="outline">
               Previous
-            </Link>
+            </LinkButton>
           ) : null}
           <span className="small">
             Page {params.page} of {totalPages}
           </span>
           {params.page < totalPages ? (
-            <Link to={pageLink(params.page + 1)} className={buttonVariants({ variant: 'outline' })}>
+            <LinkButton to={pageLink(params.page + 1)} variant="outline">
               Next
-            </Link>
+            </LinkButton>
           ) : null}
         </nav>
       )}
